@@ -90,3 +90,4 @@ def is_allowed_size(f):
 def get_unique_name(ext):
     now = datetime.now()
     return '{0}{1}.{2}'.format(now.strftime('%Y%m%d%H%M%S'), randint(100, 999), ext)
+
