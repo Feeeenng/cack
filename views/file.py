@@ -3,8 +3,6 @@ from __future__ import unicode_literals
 import os
 from cStringIO import StringIO
 from bson import ObjectId
-from random import randint
-from datetime import datetime
 
 from flask import Blueprint, send_file, request, flash, url_for
 from flask_login import login_required
@@ -15,6 +13,7 @@ from errors import Errors
 from constants import ALLOWED_FORMATS, ALLOWED_MAX_SIZE
 from utils.md5_utils import MD5
 from utils.zip_utils import Zip
+from utils.string_utils import get_unique_name
 
 instance = Blueprint('file', __name__)
 
@@ -85,9 +84,4 @@ def is_allowed_size(f):
         flash('上传失败，格式文件大小受限！')
         return False
     return True
-
-
-def get_unique_name(ext):
-    now = datetime.now()
-    return '{0}{1}.{2}'.format(now.strftime('%Y%m%d%H%M%S'), randint(100, 999), ext)
 
