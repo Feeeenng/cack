@@ -1,0 +1,12 @@
+requests
+qrcode
+redis
+bs4
+mongoengine
+flask
+flask_login
+flask_script
+flask_sqlalchemy
+flask_cache
+flask_principal
+flask_apscheduler
