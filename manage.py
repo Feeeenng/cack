@@ -39,6 +39,10 @@ def on_identity_loaded(sender, identity):
         for role in current_user.roles:
             identity.provides.add(RoleNeed(role))
 
+    # if hasattr(current_user, 'posts'):
+    #     for post in current_user.posts:
+    #         identity.provides.add(EditBlogPostNeed(unicode(post.id)))
+
 
 if __name__ == '__main__':
     manager.run(default_command='runserver')
