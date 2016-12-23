@@ -2,13 +2,13 @@
 from __future__ import unicode_literals
 import os
 import glob
+from werkzeug.routing import BaseConverter
 
 from flask import Flask
 from flask_cache import Cache
 from flask_login import LoginManager
 from flask_principal import Principal
 from flask_apscheduler import APScheduler
-from werkzeug.routing import BaseConverter
 
 from configs import conf
 from models.user import User

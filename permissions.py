@@ -16,7 +16,7 @@ ROLES = [
 
 member_permission = Permission(RoleNeed(MEMBER))
 admin_permission = Permission(RoleNeed(ADMIN))
-edit = Permission(ActionNeed())
+# edit = Permission(ActionNeed())
 
 
 # 粗粒度的权限保护
