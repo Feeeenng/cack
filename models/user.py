@@ -8,6 +8,7 @@ from mongoengine import StringField, ListField, IntField, DateTimeField, EmailFi
 from . import BaseDocument, register_pre_save
 from configs import conf
 from constants import GENDERS
+from permissions import ROLES, MEMBER
 from utils.datetime_utils import now_lambda
 from utils.md5_utils import MD5
 
@@ -25,6 +26,7 @@ class User(UserMixin, BaseDocument):
     sign_in_ip = StringField(default=None)  # 登录IP
     sign_in_at = DateTimeField(default=None)  # 登录时间
     sign_out_at = DateTimeField(default=None)  # 注销时间
+    roles = ListField(StringField(choices=ROLES, default=MEMBER), default=[])
 
     meta = {
         'collection': 'user',

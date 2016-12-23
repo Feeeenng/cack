@@ -16,27 +16,6 @@ memoize = cache.memoize  # 用于缓存费视图函数，以函数名以及参�
 cached = cache.cached  # 用户缓存视图函数，以request.path进行缓存
 
 
-def privileges_required(privileges=list()):
-    def wrapper(f):
-        @wraps(f)
-        def decorated_view(*args, **kwargs):
-            # 检查权限
-            privilege_ok = False if privileges else True
-
-            for privilege in privileges:
-                if privilege in current_user.privileges_list:
-                    privilege_ok = True
-                    break
-
-            # 检查权限通过
-            if privilege_ok:
-                return f(*args, **kwargs)
-
-            return res(code=Errors.PRIVILEGE_REQUIRED)
-        return decorated_view
-    return wrapper
-
-
 def res(code=Errors.SUCCESS, data=None, error=None, extra_msg=None):
     result = {
         'code': code,

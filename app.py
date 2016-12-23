@@ -19,7 +19,7 @@ from scripts import JOBS
 cache = Cache()
 login_manager = LoginManager()
 # login_manager.session_protection = 'strong'
-login_manager.login_view = 'index.index'
+login_manager.login_view = 'auth.login'
 login_manager.login_message = '用户需要登录后方可访问该页面'
 principal = Principal()
 scheduler = APScheduler()
