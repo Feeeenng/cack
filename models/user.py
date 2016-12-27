@@ -50,21 +50,39 @@ class User(UserMixin, BaseDocument):
 
     @classmethod
     def register(cls, username, password, confirm, email):
-        if not regex_username(username):
-            return False, '用户名必须是8-20位字母和数字的组合, 第一位必须为字母'
+        msgs = []
+        if not username:
+            msgs.append('用户名不能为空')
+        else:
+            if not regex_username(username):
+                msgs.append('用户名必须是8-20位字母和数字的组合, 第一位必须为字母')
+            else:
+                user = cls.objects(username=username).first()
+                if user:
+                    msgs.append('用户名已经存在')
 
-        user = cls.objects(username=username).first()
-        if user:
-            return False, '用户名已经存在'
+        if not password:
+            msgs.append('密码不能为空')
+            if not confirm:
+                msgs.append('重复密码不能为空')
+        else:
+            if not regex_password(password):
+                msgs.append('密码必须是6-20位字母和数字的组合, 第一位必须为大字母')
+            else:
+                if not confirm:
+                    msgs.append('重复密码不能为空')
+                else:
+                    if password != confirm:
+                        msgs.append('密码不一致')
 
-        if password != confirm:
-            return False, '密码不一致'
+        if not email:
+            msgs.append('邮箱不能为空')
+        else:
+            if not regex_email(email):
+                msgs.append('邮箱格式错误')
 
-        if not regex_password(password):
-            return False, '密码必须是6-20位字母和数字的组合, 第一位必须为大字母'
-
-        if not regex_email(email):
-            return False, '邮箱格式错误'
+        if msgs:
+            return msgs
 
         user = cls()
         user.username = username.lower()
@@ -72,4 +90,4 @@ class User(UserMixin, BaseDocument):
         user.password = md5.add_salt(current_app.config.get('SALT'))
         user.email = email
         user.save()
-        return True, None
+        return msgs

@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from flask import Blueprint, request, render_template, session, current_app, redirect, url_for, abort
+from flask import flash
 from flask_login import login_required, current_user
 from flask_principal import identity_changed, AnonymousIdentity, Identity, RoleNeed, UserNeed, ActionNeed
 
@@ -66,9 +67,12 @@ def register():
     confirm = request.form.get('confirm', '')
     email = request.form.get('email', '')
 
-    code, msg = User.register(username, password, confirm, email)
-    if not code:
-        return res(Errors.AUTH_REGISTER_INFO_ERROR, extra_msg=[msg])
+    msgs = User.register(username, password, confirm, email)
+    if msgs:
+        for msg in msgs:
+            flash(msg)
+        return render_template('/auth/register.html', category='edit')
 
-    return res()
+    flash('恭喜你注册成功')
+    return redirect(url_for('auth.login'))
 
