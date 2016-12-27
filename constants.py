@@ -3,9 +3,11 @@ from __future__ import unicode_literals
 
 
 # 性别
+SECRET = -1
 MALE = 1
 FEMALE = 2
 GENDERS = (
+    (SECRET, '保密'),
     (MALE, '男'),
     (FEMALE, '女')
 )

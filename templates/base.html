@@ -31,7 +31,7 @@
     {% macro navigation(active='home') %}
         <div class="ui inverted menu">
             <div class="ui container">
-                <a class="teal item {{ 'active' if active == 'home' else '' }}">
+                <a class="teal item {{ 'active' if active == 'home' else '' }}" href="/">
                     <i class="home icon"></i> cack
                 </a>
                 <a class="teal item {{ 'active' if active == 'shop' else '' }}">
@@ -64,8 +64,8 @@
                             </div>
                         </a>
                     {% else %}
-                        <a class="teal item {{ 'active' if active == 'sign in' else '' }}"><i class="sign in icon"></i> 登录 </a>
-                        <a class="teal item {{ 'active' if active == 'edit' else '' }}"><i class="edit icon"></i> 注册 </a>
+                        <a class="teal item {{ 'active' if active == 'sign in' else '' }}" href="/auth/login"><i class="sign in icon"></i> 登录 </a>
+                        <a class="teal item {{ 'active' if active == 'edit' else '' }}" href="/auth/register"><i class="edit icon"></i> 注册 </a>
                     {% endif %}
                 </div>
             </div>

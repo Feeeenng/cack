@@ -10,6 +10,7 @@ class Errors(object):
     UPLOAD_SIZE_LIMITATION = 201
     PARAMS_REQUIRED = 300
     AUTH_LOGIN_INFO_ERROR = 400
+    AUTH_REGISTER_INFO_ERROR = 401
 
     # error map
     error_map = {
@@ -18,7 +19,8 @@ class Errors(object):
         UPLOAD_FORMAT_LIMITATION: '上传文件格式受限',
         UPLOAD_SIZE_LIMITATION: '上传文件大小受限',
         PARAMS_REQUIRED: '参数缺失',
-        AUTH_LOGIN_INFO_ERROR: '用户名或密码错误'
+        AUTH_LOGIN_INFO_ERROR: '用户名或密码错误',
+        AUTH_REGISTER_INFO_ERROR: '注册信息错误: {0}'
     }
 
     # checked_success

@@ -24,7 +24,7 @@ def before_request():
 @instance.route('/auth/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
-        return render_template('/auth/login.html')
+        return render_template('/auth/login.html', category='sign in')
 
     username = request.form.get('username')
     password = request.form.get('password')
@@ -54,3 +54,21 @@ def logout():
     identity_changed.send(current_app._get_current_object(), identity=AnonymousIdentity())
     current_user.logout()
     return redirect(url_for('index.index'))
+
+
+@instance.route('/auth/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'GET':
+        return render_template('/auth/register.html', category='edit')
+
+    username = request.form.get('username', '')
+    password = request.form.get('password', '')
+    confirm = request.form.get('confirm', '')
+    email = request.form.get('email', '')
+
+    code, msg = User.register(username, password, confirm, email)
+    if not code:
+        return res(Errors.AUTH_REGISTER_INFO_ERROR, extra_msg=[msg])
+
+    return res()
+
