@@ -80,6 +80,10 @@ class User(UserMixin, BaseDocument):
         else:
             if not regex_email(email):
                 msgs.append('邮箱格式错误')
+            else:
+                user = cls.objects(email=email).first()
+                if user:
+                    msgs.append('邮箱已经存在')
 
         if msgs:
             return msgs
@@ -89,5 +93,6 @@ class User(UserMixin, BaseDocument):
         md5 = MD5(password)
         user.password = md5.add_salt(current_app.config.get('SALT'))
         user.email = email
+        user.nickname = username
         user.save()
         return msgs

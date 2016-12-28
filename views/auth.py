@@ -9,6 +9,7 @@ from flask_principal import identity_changed, AnonymousIdentity, Identity, RoleN
 from models.user import User
 from views import res
 from errors import Errors
+from utils.regex_utils import regex_username, regex_password, regex_email
 
 
 instance = Blueprint('auth', __name__)
@@ -16,10 +17,7 @@ instance = Blueprint('auth', __name__)
 
 @instance.before_request
 def before_request():
-    if request.method == 'POST':
-        token = session.pop('_csrf_token', None)
-        if not token or token != request.form.get('_csrf_token'):
-            abort(403)
+    pass
 
 
 @instance.route('/auth/login', methods=['GET', 'POST'])
@@ -62,12 +60,23 @@ def register():
     if request.method == 'GET':
         return render_template('/auth/register.html', category='edit')
 
+    token = session.pop('_csrf_token', None)
+    if not token or token != request.form.get('_csrf_token'):
+        abort(403)
+
     username = request.form.get('username', '')
     password = request.form.get('password', '')
     confirm = request.form.get('confirm', '')
     email = request.form.get('email', '')
 
-    msgs = User.register(username, password, confirm, email)
+    params = {
+        'username': username,
+        'password': password,
+        'confirm': confirm,
+        'email': email
+    }
+
+    msgs = User.register(**params)
     if msgs:
         for msg in msgs:
             flash(msg)
@@ -76,3 +85,51 @@ def register():
     flash('恭喜你注册成功')
     return redirect(url_for('auth.login'))
 
+
+# ################# ajax请求 ################# #
+@instance.route('/auth/username_regex', methods=['POST'])
+def username_regex():
+    # 检查username格式
+    r = request.get_json(force=True)
+    username = r.get('username')
+    return res(data=regex_username(username))
+
+
+@instance.route('/auth/password_regex', methods=['POST'])
+def password_regex():
+    # 检查password格式
+    r = request.get_json(force=True)
+    password = r.get('password')
+    return res(data=regex_password(password))
+
+
+@instance.route('/auth/email_regex', methods=['POST'])
+def email_regex():
+    # 检查email格式
+    r = request.get_json(force=True)
+    email = r.get('email')
+    return res(data=regex_email(email))
+
+
+@instance.route('/auth/check_username', methods=['POST'])
+def check_username():
+    # 检查username是否存在
+    r = request.get_json(force=True)
+    username = r.get('username')
+    if username:
+        user = User.objects(username=username).first()
+        if user:
+            return res(data=True)
+    return res(data=False)
+
+
+@instance.route('/auth/check_email', methods=['POST'])
+def check_email():
+    # 检查email是否存在
+    r = request.get_json(force=True)
+    email = r.get('email')
+    if email:
+        user = User.objects(email=email).first()
+        if user:
+            return res(data=True)
+    return res(data=False)
