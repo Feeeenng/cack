@@ -41,7 +41,8 @@ def login():
     user.save()
 
     identity_changed.send(current_app._get_current_object(), identity=Identity(user.id))
-    return redirect(request.args.get('next') or url_for('index.index'))
+    flash('你好, {0}'.format(user.nickname), 'info')
+    return res(data={'url': request.args.get('next') or url_for('index.index')})
 
 
 @instance.route('/auth/logout')

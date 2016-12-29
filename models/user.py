@@ -62,7 +62,7 @@ class User(UserMixin, BaseDocument):
             if not regex_username(username):
                 msgs.append('用户名必须是8-20位字母和数字的组合, 第一位必须为字母')
             else:
-                user = cls.objects(username=username).first()
+                user = cls.objects(username=username.lower()).first()
                 if user:
                     msgs.append('用户名已经存在')
 

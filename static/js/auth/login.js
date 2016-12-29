@@ -65,9 +65,51 @@ $('#login-form').form({
     }
 }, {
     on: 'submit',
-    inline: true
+    inline: true,
+    onSuccess: submitLoginForm
 });
 
 $('#login').click(function () {
-    $('#login-form').submit();
+    $('#login-form').submit(function () {
+        return false;
+    });
 });
+
+function submitLoginForm() {
+    var data = $('.ui.form input').serializeArray();
+    $.ajax({
+        async : false,
+        url: '/auth/login',
+        type: 'POST',
+        data: data,
+        dataType   : 'json',
+        success: function(ret){
+            var success = ret['success'];
+            if(success){
+                location.href = ret['detail']['url'];
+            }else{
+                var msg = ret['error'];
+                new jBox('Notice', {
+                    content: msg,
+                    color: 'black',
+                    animation: 'slide',
+                    position: {
+                        x: 500,
+                        y: 500
+                    }
+                });
+            }
+        },
+        error: function () {
+            new jBox('Notice', {
+                    content: msg,
+                    color: 'red',
+                    animation: 'slide',
+                    position: {
+                        x: 100,
+                        y: 100
+                    }
+                });
+        }
+    });
+}
