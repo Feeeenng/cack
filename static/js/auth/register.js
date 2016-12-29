@@ -98,7 +98,7 @@ $('#register_form').form({
             },
             {
                 type: 'checkUsernameFormat',
-                prompt: '用户名必须是8-20位字母和数字的组合, 第一位必须为字母'
+                prompt: '用户名必须是6-20位字母和数字的组合, 第一位必须为字母'
             },
             {
                 type: 'checkUsername',

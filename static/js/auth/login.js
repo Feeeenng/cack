@@ -46,7 +46,7 @@ $('#login-form').form({
             },
             {
                 type: 'checkUsernameFormat',
-                prompt: '用户名必须是8-20位字母和数字的组合, 第一位必须为字母'
+                prompt: '用户名必须是6-20位字母和数字的组合, 第一位必须为字母'
             }
         ]
     },
@@ -79,7 +79,7 @@ function submitLoginForm() {
     var data = $('.ui.form input').serializeArray();
     $.ajax({
         async : false,
-        url: '/auth/login',
+        url: $('.ui.form').attr('action'),
         type: 'POST',
         data: data,
         dataType   : 'json',
@@ -94,22 +94,22 @@ function submitLoginForm() {
                     color: 'black',
                     animation: 'slide',
                     position: {
-                        x: 500,
-                        y: 500
+                        x: 100,
+                        y: 100
                     }
                 });
             }
         },
         error: function () {
             new jBox('Notice', {
-                    content: msg,
-                    color: 'red',
-                    animation: 'slide',
-                    position: {
-                        x: 100,
-                        y: 100
-                    }
-                });
+                content: msg,
+                color: 'red',
+                animation: 'slide',
+                position: {
+                    x: 100,
+                    y: 100
+                }
+            });
         }
     });
 }

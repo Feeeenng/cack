@@ -16,7 +16,7 @@ def regex_email(email):
 # 账号的正则
 def regex_username(username):
     code = False
-    if re.match('^[A-Za-z][A-Za-z0-9]{7,19}$', username):
+    if re.match('^[A-Za-z][A-Za-z0-9]{5,19}$', username):
         if re.search('[0-9]+', username):
             code = True
     return code

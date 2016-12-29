@@ -60,7 +60,7 @@ class User(UserMixin, BaseDocument):
             msgs.append('用户名不能为空')
         else:
             if not regex_username(username):
-                msgs.append('用户名必须是8-20位字母和数字的组合, 第一位必须为字母')
+                msgs.append('用户名必须是6-20位字母和数字的组合, 第一位必须为字母')
             else:
                 user = cls.objects(username=username.lower()).first()
                 if user:
@@ -128,6 +128,6 @@ class User(UserMixin, BaseDocument):
         if data.get('confirm') != self.id:
             return False
 
-        self.is_confirmed = 1
+        self.is_confirmed = True
         self.save()
         return True

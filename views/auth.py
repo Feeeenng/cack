@@ -88,15 +88,14 @@ def register():
 @instance.route('/email_confirm/<token>', methods=['GET'])
 @login_required
 def confirm(token):
-    if current_user.confirmed:
-        return redirect(url_for('main.index'))
+    if current_user.is_confirmed:
+        return redirect(url_for('index.index'))
 
-    user = User.from_id(current_user.id)
-    if user.confirm(token):
+    if current_user.confirm(token):
         flash('您的账户邮箱验证成功', 'info')
     else:
         flash('邮箱验证链接无效或是已经过期', 'info')
-    return redirect(url_for('main.index'))
+    return redirect(url_for('index.index'))
 
 
 # ################# ajax请求 ################# #
