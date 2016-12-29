@@ -10,10 +10,12 @@
     </title>
 
     {% block styles %}  <!-- 样式区 -->
-        <link rel="stylesheet" charset="utf-8" type="text/css" href="//cdn.bootcss.com/semantic-ui/2.2.4/semantic.min.css"/>
+        <link rel="shortcut icon" href="{{ url_for('static', filename='icon/cack.ico') }}">
+        <link rel="stylesheet" charset="utf-8" type="text/css" href="//cdn.bootcss.com/semantic-ui/2.2.4/semantic.min.css">
         <link rel="stylesheet" href="{{ url_for('static', filename='lib/jBox/Source/jBox.css') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='lib/jBox/Source/plugins/Notice/jBox.Notice.css') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='lib/jBox/Source/themes/NoticeFancy.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
         <style>
             #user_info:hover,
             #my_orders:hover,
@@ -25,6 +27,16 @@
                 color: white!important;
                 background-color: #00B5AD!important;
                 outline: 1px solid rgba(34,36,38,.15)!important;
+            }
+
+            body {
+              background-color: #DADADA;
+            }
+            body > .grid {
+              height: 100%;
+            }
+            .column {
+              max-width: 450px;
             }
         </style>
     {% endblock %}
@@ -61,7 +73,7 @@
                                     <div class="item" id="favorites"><i class="star icon"></i> 收藏夹 </div>
                                     <div class="item" id="settings"><i class="settings icon"></i> 设置 </div>
                                     <div class="ui divider"></div>
-                                    <div class="item" id="sign_out"><i class="sign out icon"></i> 注销 </div>
+                                    <div class="item" id="sign_out" onclick="location.href='{{ url_for('auth.logout') }}'"><i class="sign out icon"></i> 注销 </div>
                                 </div>
                             </div>
                         </a>
@@ -80,11 +92,8 @@
         {{ navigation() }}
     {% endblock %}
 
-    <div class="ui main container">
-        <!-- messages -->
-        {% block content %}  <!-- 内容区 -->
-        {% endblock %}
-    </div>
+    {% block content %}  <!-- 内容区 -->
+    {% endblock %}
 
     <footer>
         {% block footer %}  <!-- 页脚区 -->

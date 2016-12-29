@@ -88,7 +88,7 @@ $.fn.form.settings.rules.checkEmail = function(email){
     return !flag;
 };
 
-$('.ui.form').form({
+$('#register_form').form({
     username: {
         identifier: 'username',
         rules: [
