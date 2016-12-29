@@ -36,8 +36,8 @@ class Email(object):
         self.__message['From'] = self.__sender
         self.__message['To'] = ';'.join(list(set(self.__receivers)))
         self.__message['Subject'] = Header(self.__subject, 'utf-8')
-        self.__message['Cc'] = ';'.join(set(self.__mails_cc) - set(self.__receivers))
-        self.__message['Bcc'] = ';'.join(set(self.__mails_bcc) - set(self.__receivers) - set(self.__mails_cc or []))
+        self.__message['Cc'] = ';'.join(set(self.__mails_cc or []) - set(self.__receivers))
+        self.__message['Bcc'] = ';'.join(set(self.__mails_bcc or []) - set(self.__receivers) - set(self.__mails_cc or []))
         if self.__body:
             self.__message.attach(MIMEText(self.__body, 'plain', 'utf-8'))
         if self.__html:

@@ -1,6 +1,10 @@
 # -*- coding: utf8 -*-
 from __future__ import unicode_literals
 
+from flask import render_template
+from flask import url_for
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+
 from flask import current_app
 from flask_login import UserMixin, login_user, logout_user
 from mongoengine import StringField, ListField, IntField, DateTimeField, EmailField, BooleanField
@@ -12,6 +16,7 @@ from permissions import ROLES, MEMBER
 from utils.datetime_utils import now_lambda
 from utils.regex_utils import regex_username, regex_password, regex_email
 from utils.md5_utils import MD5
+from utils.mail_utils import Email
 
 
 @register_pre_save()
@@ -27,7 +32,7 @@ class User(UserMixin, BaseDocument):
     sign_in_ip = StringField(default=None)  # 登录IP
     sign_in_at = DateTimeField(default=None)  # 登录时间
     sign_out_at = DateTimeField(default=None)  # 注销时间
-    roles = ListField(StringField(choices=ROLES, default=MEMBER), default=[])
+    roles = ListField(StringField(choices=ROLES, default=MEMBER), default=[])  # 角色
 
     meta = {
         'collection': 'user',
@@ -95,4 +100,34 @@ class User(UserMixin, BaseDocument):
         user.email = email
         user.nickname = username
         user.save()
+
+        # generate confirm token
+        token = user.generate_confirmation_token()
+
+        # get confirm url
+        confirm_url = url_for('auth.confirm', token=token, _external=True)
+        html = render_template('email/email_activate.html', confirm_url=confirm_url)
+
+        email = Email(smtp_sever='smtp.126.com', username='haner27', password='mqhaner27', sender='haner27@126.com',
+                      receivers=[user.email], subject='账户邮件确认', html=html)
+        email.build_email()
+        email.send_email()
+
         return msgs
+
+    def generate_confirmation_token(self, expiration=86400):
+        s = Serializer(current_app.config['SECRET_KEY'], expires_in=expiration)
+        return s.dumps({'confirm': self.id})
+
+    def confirm(self, token):
+        s = Serializer(current_app.config['SECRET_KEY'])
+        try:
+            data = s.loads(token)
+        except:
+            return False
+        if data.get('confirm') != self.id:
+            return False
+
+        self.is_confirmed = 1
+        self.save()
+        return True

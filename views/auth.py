@@ -78,12 +78,24 @@ def register():
 
     msgs = User.register(**params)
     if msgs:
-        for msg in msgs:
-            flash(msg)
-        return render_template('/auth/register.html', category='edit')
+        return res(code=Errors.AUTH_REGISTER_INFO_ERROR, extra_msg=' | '.join(msgs))
 
-    flash('恭喜你注册成功')
+    flash('恭喜您注册成功', 'info')
     return redirect(url_for('auth.login'))
+
+
+@instance.route('/email_confirm/<token>', methods=['GET'])
+@login_required
+def confirm(token):
+    if current_user.confirmed:
+        return redirect(url_for('main.index'))
+
+    user = User.from_id(current_user.id)
+    if user.confirm(token):
+        flash('您的账户邮箱验证成功', 'info')
+    else:
+        flash('邮箱验证链接无效或是已经过期', 'info')
+    return redirect(url_for('main.index'))
 
 
 # ################# ajax请求 ################# #

@@ -99,21 +99,35 @@
         <script src="{{ url_for('static', filename='lib/jBox/Source/jBox.js') }}"></script>
         <script src="{{ url_for('static', filename='lib/jBox/Source/plugins/Notice/jBox.Notice.js') }}"></script>
         <script>
-            var msgs = {{ get_flashed_messages() | tojson }};
             $(document).ready(function () {
                 $('.dropdown').dropdown({
                      action: 'combo'
                 });
+                var msgs = {{ get_flashed_messages(True) | tojson }};
                 for(var index in msgs){
-                    var msg = msgs[index];
+                    var category = msgs[index][0];
+                    var msg = msgs[index][1];
+                    var color = '';
+                    if(category == 'error'){
+                        color = 'red';
+                    } else if(category == 'info'){
+                        color = 'green';
+                    } else if(category == 'warning'){
+                        color = 'yellow';
+                    } else {
+                        color = 'blue'
+                    }
                     new jBox('Notice', {
+                        theme: 'NoticeFancy',
                         attributes: {
-                          x: 'right',
+                          x: 'left',
                           y: 'bottom'
                         },
-                        color: 'red',
+                        color: color,
                         content: msg,
-                        animation: {open: 'slide:bottom', close: 'slide:right'}
+                        audio: '{{ url_for('static', filename='lib/jBox/Source/audio/bling2') }}',
+                        volume: 80,
+                        animation: {open: 'slide:bottom', close: 'slide:left'}
                     });
                 }
             });
