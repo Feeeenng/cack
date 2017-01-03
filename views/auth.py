@@ -119,8 +119,8 @@ def forget_password():
     return res(data={'url': request.args.get('next') or url_for('index.index')})
 
 
-@instance.route('/auth/find_password/<token>/<email>', methods=['GET', 'POST'])
-def find_password(token, email):
+@instance.route('/auth/reset_password/<token>/<email>', methods=['GET', 'POST'])
+def reset_password(token, email):
     if request.method == 'GET':
         return render_template('/auth/reset_password.html')
 

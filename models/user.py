@@ -129,10 +129,10 @@ class User(UserMixin, BaseDocument):
 
     def send_email_find_password(self):
         # generate confirm token
-        token = generate_confirmation_token(current_app.config['SECRET_KEY'], 'reset', self.email, 86400)
+        token = generate_confirmation_token(current_app.config['SECRET_KEY'], 'reset', self.email, 60 * 15)
 
         # get confirm url
-        find_password_url = url_for('auth.find_password', token=token, email=self.email, _external=True)
+        find_password_url = url_for('auth.reset_password', token=token, email=self.email, _external=True)
         html = render_template('email/email_find_password.html', find_password_url=find_password_url)
 
         EMAIL_SMTP_SERVER = current_app.config['EMAIL_SMTP_SERVER']
