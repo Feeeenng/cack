@@ -27,6 +27,11 @@ class Config(object):
 class DevelopmentConfig(Config):
     DEBUG = True
 
+    # 邮箱配置
+    EMAIL_SMTP_SERVER = 'smtp.126.com'
+    EMAIL_USERNAME = 'haner27'
+    EMAIL_PASSWORD = 'mqhaner27'
+    EMAIL_SENDER = 'haner27@126.com'
 
 class ProductionConfig(Config):
     DEBUG = False

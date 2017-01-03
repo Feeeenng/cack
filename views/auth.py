@@ -10,6 +10,7 @@ from models.user import User
 from views import res
 from errors import Errors
 from utils.regex_utils import regex_username, regex_password, regex_email
+from utils.token_utils import confirm_token
 
 
 instance = Blueprint('auth', __name__)
@@ -79,13 +80,13 @@ def register():
 
     msgs = User.register(**params)
     if msgs:
-        return res(code=Errors.AUTH_REGISTER_INFO_ERROR, extra_msg=' | '.join(msgs))
+        return res(code=Errors.AUTH_REGISTER_INFO_ERROR, extra_msg=[' | '.join(msgs)])
 
     flash('恭喜您注册成功', 'info')
     return redirect(url_for('auth.login'))
 
 
-@instance.route('/email_confirm/<token>', methods=['GET'])
+@instance.route('/auth/email_confirm/<token>', methods=['GET'])
 @login_required
 def confirm(token):
     if current_user.is_confirmed:
@@ -96,6 +97,58 @@ def confirm(token):
     else:
         flash('邮箱验证链接无效或是已经过期', 'info')
     return redirect(url_for('index.index'))
+
+
+@instance.route('/auth/forget_password', methods=['GET', 'POST'])
+def forget_password():
+    if request.method == 'GET':
+        return render_template('/auth/forget_password.html')
+
+    username = request.form.get('username')
+    email = request.form.get('email')
+
+    if not username or not email:
+        return res(code=Errors.PARAMS_REQUIRED)
+
+    user = User.objects(username=username, email=email).first()
+    if not user:
+        return res(code=Errors.AUTH_FORGET_PASSWORD_ERROR)
+
+    user.send_email_find_password()
+    flash('重置密码邮件已发送, 请查收')
+    return res(data={'url': request.args.get('next') or url_for('index.index')})
+
+
+@instance.route('/auth/find_password/<token>/<email>', methods=['GET', 'POST'])
+def find_password(token, email):
+    if request.method == 'GET':
+        return render_template('/auth/reset_password.html')
+
+    password = request.form.get('password')
+    confirm = request.form.get('confirm')
+    if not password:
+        return res(code=Errors.COMMON_ERROR, extra_msg=['密码不能为空'])
+
+    if not regex_password(password):
+        return res(code=Errors.COMMON_ERROR, extra_msg=['密码必须是6-20位字母和数字的组合, 第一位必须为大字母'])
+
+    if not confirm:
+        return res(code=Errors.COMMON_ERROR, extra_msg=['重复密码不能为空'])
+
+    if password != confirm:
+        return res(code=Errors.COMMON_ERROR, extra_msg=['密码不一致'])
+
+    if confirm_token(current_app.config['SECRET_KEY'], 'reset', email, token):
+        user = User.objects(email=email).first()
+        if user:
+            user.reset_password(password)
+            flash('密码重置成功', 'info')
+        else:
+            flash('邮箱验证链接无效或是已经过期', 'warning')
+    else:
+        flash('邮箱验证链接无效或是已经过期', 'warning')
+
+    return res(data={'url': request.args.get('next') or url_for('auth.login')})
 
 
 # ################# ajax请求 ################# #

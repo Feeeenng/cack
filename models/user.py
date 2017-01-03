@@ -1,11 +1,7 @@
 # -*- coding: utf8 -*-
 from __future__ import unicode_literals
 
-from flask import render_template
-from flask import url_for
-from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
-
-from flask import current_app
+from flask import url_for, current_app, render_template
 from flask_login import UserMixin, login_user, logout_user
 from mongoengine import StringField, ListField, IntField, DateTimeField, EmailField, BooleanField
 
@@ -17,6 +13,7 @@ from utils.datetime_utils import now_lambda
 from utils.regex_utils import regex_username, regex_password, regex_email
 from utils.md5_utils import MD5
 from utils.mail_utils import Email
+from utils.token_utils import generate_confirmation_token, confirm_token
 
 
 @register_pre_save()
@@ -108,7 +105,11 @@ class User(UserMixin, BaseDocument):
         confirm_url = url_for('auth.confirm', token=token, _external=True)
         html = render_template('email/email_activate.html', confirm_url=confirm_url)
 
-        email = Email(smtp_sever='smtp.126.com', username='haner27', password='mqhaner27', sender='haner27@126.com',
+        EMAIL_SMTP_SERVER = current_app.config['EMAIL_SMTP_SERVER']
+        EMAIL_USERNAME = current_app.config['EMAIL_USERNAME']
+        EMAIL_PASSWORD = current_app.config['EMAIL_PASSWORD']
+        EMAIL_SENDER = current_app.config['EMAIL_SENDER']
+        email = Email(smtp_sever=EMAIL_SMTP_SERVER, username=EMAIL_USERNAME, password=EMAIL_PASSWORD, sender=EMAIL_SENDER,
                       receivers=[user.email], subject='账户邮件确认', html=html)
         email.build_email()
         email.send_email()
@@ -116,18 +117,29 @@ class User(UserMixin, BaseDocument):
         return msgs
 
     def generate_confirmation_token(self, expiration=86400):
-        s = Serializer(current_app.config['SECRET_KEY'], expires_in=expiration)
-        return s.dumps({'confirm': self.id})
+        return generate_confirmation_token(current_app.config['SECRET_KEY'], 'confirm', self.id, expiration)
 
     def confirm(self, token):
-        s = Serializer(current_app.config['SECRET_KEY'])
-        try:
-            data = s.loads(token)
-        except:
-            return False
-        if data.get('confirm') != self.id:
-            return False
+        return confirm_token(current_app.config['SECRET_KEY'], 'confirm', self.id, token)
 
-        self.is_confirmed = True
+    def reset_password(self, password):
+        md5 = MD5(password)
+        self.password = md5.add_salt(current_app.config.get('SALT'))
         self.save()
-        return True
+
+    def send_email_find_password(self):
+        # generate confirm token
+        token = generate_confirmation_token(current_app.config['SECRET_KEY'], 'reset', self.email, 86400)
+
+        # get confirm url
+        find_password_url = url_for('auth.find_password', token=token, email=self.email, _external=True)
+        html = render_template('email/email_find_password.html', find_password_url=find_password_url)
+
+        EMAIL_SMTP_SERVER = current_app.config['EMAIL_SMTP_SERVER']
+        EMAIL_USERNAME = current_app.config['EMAIL_USERNAME']
+        EMAIL_PASSWORD = current_app.config['EMAIL_PASSWORD']
+        EMAIL_SENDER = current_app.config['EMAIL_SENDER']
+        email = Email(smtp_sever=EMAIL_SMTP_SERVER, username=EMAIL_USERNAME, password=EMAIL_PASSWORD, sender=EMAIL_SENDER,
+                      receivers=[self.email], subject='密码找回', html=html)
+        email.build_email()
+        email.send_email()
