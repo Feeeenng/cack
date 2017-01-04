@@ -21,8 +21,8 @@ def index():
     return render_template('/index/index.html', category='home')
 
 
-from permissions import member_permission
-@instance.route('/test')
-@member_permission.require(http_exception=403)
-def test():
-    return res(data='test')
+# from permissions import member_permission
+# @instance.route('/test')
+# @member_permission.require(http_exception=403)
+# def test():
+#     return res(data='test')

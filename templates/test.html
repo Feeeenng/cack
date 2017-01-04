@@ -1,0 +1,58 @@
+<html>
+<head>
+    <title>Jquery Scroll Pagination</title>
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <script type="text/javascript">
+        var isLoading = false;
+        var hasMoreData = true;
+        function ajax_req(page) {
+            var data = {
+                'page': page
+            };
+            $('div#lastPostsLoader').html('<img src="/static/icon/cack.ico">');
+            isLoading = true;
+            $.ajax({
+                async : false,
+                url: 'http://127.0.0.1:5000/test',
+                type: "POST",
+                data: JSON.stringify(data),
+                dataType   : "json",
+                success: function(ret){
+                    var d = ret["detail"];
+                    if(d.length!=0){
+                        hasMoreData = true;
+                        for(var i in d){
+                            $('#content').append('<div class="page-data" page='+page+'>'+d[i].content+'</div>');
+                        }
+                    } else {
+                        hasMoreData = false;
+                        $('#content').append('------------没有数据可加载-----------');
+                    }
+                    $('div#lastPostsLoader').empty();
+                    isLoading = false;
+                }
+            });
+        }
+
+        $(window).scroll(function(){
+            var winHeight = window.innerHeight;
+			var rect = document.body.getBoundingClientRect();
+			if(rect.height-(Math.abs(rect.top)+winHeight)<20 && !isLoading && hasMoreData){
+			    var page = parseInt($('.page-data:last').attr('page')) + 1;
+                ajax_req(page);
+			}
+        });
+
+        $(document).ready(function () {
+            ajax_req(1);
+        });
+    </script>
+</head>
+<body>
+<div id="lastPostsLoader">
+</div>
+{# style="height: 200px;overflow:auto"#}
+<div id="content">
+
+</div>
+</body>
