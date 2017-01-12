@@ -5,8 +5,7 @@ from flask import url_for, current_app, render_template
 from flask_login import UserMixin, login_user, logout_user
 from mongoengine import StringField, ListField, IntField, DateTimeField, EmailField, BooleanField
 
-from . import BaseDocument, register_pre_save
-from configs import conf
+from . import BaseDocument, register_pre_save, conf
 from constants import GENDERS, SECRET
 from permissions import ROLES, MEMBER
 from utils.datetime_utils import now_lambda

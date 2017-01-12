@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 from mongoengine import StringField, FloatField, IntField, ListField, EmbeddedDocument, EmbeddedDocumentField
 
-from . import BaseDocument, register_pre_save
+from . import BaseDocument, register_pre_save, conf
 
 
 @register_pre_save()
@@ -13,6 +13,12 @@ class GoodsCategory(BaseDocument):
     level = IntField()  # 分类等级， 1级是最大
     parent_id = StringField(default='')  # 父分类ID
     ancestors_ids = ListField(StringField(), default=[])  # 祖先ID
+
+    meta = {
+        'collection': 'goods_category',
+        'db_alias': conf.DATABASE_NAME,
+        'strict': False
+    }
 
     @classmethod
     def get_root_node(cls):
@@ -71,6 +77,12 @@ class Goods(BaseDocument):
     discount = FloatField(default=10.0)  # 折扣, 例如: 8.8为8.8折
     shop_id = StringField(required=True)  # 商店ID
     specifications = ListField(EmbeddedDocumentField(EmbeddedSpecification), default=[])  # 商品规格(如：大小, 颜色, 形状，型号, 品牌等)
+
+    meta = {
+        'collection': 'goods',
+        'db_alias': conf.DATABASE_NAME,
+        'strict': False
+    }
 
     @property
     def real_price(self):

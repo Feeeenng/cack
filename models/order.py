@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from mongoengine import StringField, DateTimeField, IntField, ListField, EmbeddedDocument, EmbeddedDocumentField, \
     FloatField
 
-from . import BaseDocument, register_pre_save
+from . import BaseDocument, register_pre_save, conf
 
 
 class EmbeddedOrderHistory(EmbeddedDocument):
@@ -54,3 +54,9 @@ class Order(BaseDocument):
     products = ListField(EmbeddedDocumentField(EmbeddedOrderProduct), default=[])  # 产品
     total_price = FloatField()  # 原总价
     real_total_price = FloatField()  # 真实总价
+
+    meta = {
+        'collection': 'order',
+        'db_alias': conf.DATABASE_NAME,
+        'strict': False
+    }

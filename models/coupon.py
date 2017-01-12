@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from mongoengine import StringField, FloatField, IntField, ListField, EmbeddedDocument, EmbeddedDocumentField, \
     DateTimeField, BooleanField
 
-from . import BaseDocument, register_pre_save
+from . import BaseDocument, register_pre_save, conf
 
 
 class EmbeddedRule(EmbeddedDocument):
@@ -39,6 +39,12 @@ class Coupon(BaseDocument):
     rule = EmbeddedDocumentField(EmbeddedRule)  # 规则
     usage = BooleanField(default=False)  # 是否使用过
     owner_id = StringField()  # 所属用户
+
+    meta = {
+        'collection': 'coupon',
+        'db_alias': conf.DATABASE_NAME,
+        'strict': False
+    }
 
     def as_dict(self):
         dic = dict(self.to_mongo())

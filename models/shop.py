@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 from mongoengine import StringField, FloatField, IntField, ListField, EmbeddedDocument, EmbeddedDocumentField
 
-from . import BaseDocument, register_pre_save
+from . import BaseDocument, register_pre_save, conf
 from models.coupon import Coupon
 
 
@@ -22,6 +22,12 @@ class Shop(BaseDocument):
     description = StringField()
     owner_id = StringField(required=True)
     contact = EmbeddedDocumentField(EmbeddedContact)
+
+    meta = {
+        'collection': 'shop',
+        'db_alias': conf.DATABASE_NAME,
+        'strict': False
+    }
 
     def as_dict(self):
         dic = dict(self.to_mongo())
