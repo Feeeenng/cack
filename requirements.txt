@@ -3,6 +3,7 @@ qrcode
 redis
 bs4
 mongoengine
+qiniu
 flask
 flask_login
 flask_script

@@ -8,12 +8,9 @@ from flask import Blueprint, send_file, request, flash, url_for
 from flask_login import login_required
 
 from . import res
-from models import gfs
 from errors import Errors
 from constants import ALLOWED_FORMATS, ALLOWED_MAX_SIZE
 from utils.md5_utils import MD5
-from utils.zip_utils import Zip
-from utils.string_utils import get_unique_name
 
 instance = Blueprint('file', __name__)
 
@@ -35,37 +32,7 @@ def upload():
 
     data = f.stream.read()
     md5 = MD5(data).md5_content
-    exists = gfs.find_one({'md5': md5})
-    if not exists:
-        original_filename = f.filename
-        content_type = f.content_type
-        ext = os.path.splitext(f.filename)[-1].strip('.')
-        filename = get_unique_name(ext)
-        file_id = gfs.put(data, filename=filename, original_filename=original_filename, content_type=content_type)
-    else:
-        file_id = exists._id
-        filename = exists.filename
-
-    url = url_for('file.show', file_id=file_id)
-    return res(data=dict(id=unicode(file_id), name=filename, url=url))
-
-
-@instance.route('/file/download/<regex("[0-9a-z]{24}"):file_id>', methods=['GET'])
-def download(file_id):
-    f = gfs.get(ObjectId(file_id))
-    imz = Zip()
-    io = StringIO(f.read())
-    imz.add_file(io, f.filename)
-    output_io = imz.output()
-    return send_file(output_io, as_attachment=True, attachment_filename='{0}.zip'.format(os.path.splitext(f.filename)[0]))
-
-
-@instance.route('/file/show/<regex("[0-9a-z]{24}"):file_id>', methods=['GET'])
-def show(file_id):
-    f = gfs.get(ObjectId(file_id))
-    io = StringIO(f.read())
-    io.seek(0)
-    return send_file(io, mimetype=f.content_type)  # 指定相关mimetype
+    return res()
 
 
 def is_allowed_format(file_name):

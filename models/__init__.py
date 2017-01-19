@@ -2,7 +2,6 @@
 from __future__ import unicode_literals
 from utils.datetime_utils import now_lambda
 import random
-from gridfs import GridFS
 
 from mongoengine import signals, connect, Document, StringField, DateTimeField
 from redis import Redis
@@ -64,13 +63,6 @@ conn = connect(conf.DATABASE_NAME,
 
 # gfs初始化
 db = conn[conf.DATABASE_NAME]
-gfs = GridFS(db)
-
-# file_id = gfs.put('韩能放2'.encode('utf-8'), filename='test.txt', original_filename='xxx.txt', content_type='text/plain')
-# print file_id
-# print gfs.list()
-# f = gfs.get(file_id)
-# print f.read()
 
 # redis初始化
 redis = Redis(
