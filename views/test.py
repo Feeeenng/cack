@@ -18,10 +18,4 @@ def before_request():
 def index():
     if request.method == 'GET':
         return render_template('test.html')
-
-    data = [{'id': i, 'content': i} for i in xrange(1, 200)]
-    per_page = 60
-    r = request.get_json(force=True)
-    page = r.get('page', 1)
-    d = data[(page - 1) * per_page: page * per_page]
-    return res(data=d)
+    return res()

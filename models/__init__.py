@@ -7,6 +7,7 @@ from mongoengine import signals, connect, Document, StringField, DateTimeField
 from redis import Redis
 
 from utils.string_utils import get_upper_letters
+from utils.qiniu_utils import UploaderUtils
 from configs import conf
 
 
@@ -71,3 +72,11 @@ redis = Redis(
     db=conf.REDIS_DB,
     socket_connect_timeout=3,
     socket_timeout=3)
+
+# 七牛
+uploader = UploaderUtils(
+    conf.QINIU_ACCESS_KEY,
+    conf.QINIU_SECRET_KEY,
+    conf.QINIU_BUCKET_NAME,
+    conf.QINIU_BUCKET_DOMAIN
+)

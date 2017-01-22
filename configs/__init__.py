@@ -25,7 +25,7 @@ class Config(object):
 
     # 七牛
     QINIU_BUCKET_NAME = 'cack'
-    QINIU_BUCKET_DOMAIN = 'ojysw795f.bkt.clouddn.com'
+    QINIU_BUCKET_DOMAIN = 'http://ojysw795f.bkt.clouddn.com'
     QINIU_ACCESS_KEY = 'Q_2wWA9VY0rtEUwo1z2Va2cGeFygTYO8UH2i1TR8'
     QINIU_SECRET_KEY = 'xraDccwOWajsCO-FRH6agGcTuPilVBdTeavh_-MA'
 

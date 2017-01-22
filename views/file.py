@@ -11,6 +11,8 @@ from . import res
 from errors import Errors
 from constants import ALLOWED_FORMATS, ALLOWED_MAX_SIZE
 from utils.md5_utils import MD5
+from models import uploader
+from models.file import FileManage
 
 instance = Blueprint('file', __name__)
 
@@ -31,8 +33,60 @@ def upload():
         return res(code=Errors.UPLOAD_SIZE_LIMITATION)
 
     data = f.stream.read()
+    io = StringIO()
+    io.write(data)
+    io.seek(0)
     md5 = MD5(data).md5_content
+    fm = FileManage.objects(md5=md5, deleted_at=None).first()
+    if not fm:
+        code, msg, d = uploader.upload(io)
+        if not code:
+            return res(code=Errors.QINIU_ERROR, extra_msg=[msg])
+
+        key = d.get('key', '')
+        hash = d.get('hash', '')
+        size = d.get('size')
+        content_type = d.get('content_type')
+
+        fm = FileManage()
+        fm.name = f.filename
+        fm.hash = hash
+        fm.md5 = md5
+        fm.key = key
+        fm.size = size
+        fm.content_type = content_type
+        fm.save()
+    return res(data={'url': fm.file_url})
+
+
+@instance.route('/file/delete/<regex("[0-9a-z]{24}"):key>', methods=['GET'])
+@login_required
+def delete(key):
+    fm = FileManage.objects(key=key, deleted_at=None).first()
+    if not fm:
+        return res(code=Errors.NOT_FOUND)
+
+    code, msg = fm.delete(key)
+    if not code:
+        return res(code=Errors.QINIU_ERROR, extra_msg=[msg])
     return res()
+
+
+@instance.route('/file/download/<regex("[0-9a-z]{24}"):key>', methods=['GET'])
+def download(key):
+    fm = FileManage.objects(key=key, deleted_at=None).first()
+    if not fm:
+        return res(code=Errors.NOT_FOUND)
+
+    code, msg, io = uploader.download(key)
+    if not code:
+        return res(code=Errors.QINIU_ERROR, extra_msg=[msg])
+
+    return send_file(io,
+                     fm.content_type,
+                     as_attachment=True,
+                     attachment_filename=fm.name
+                     )
 
 
 def is_allowed_format(file_name):
