@@ -1,4 +1,9 @@
 {% extends "base.html" %}
+
 {% block navigation %}
     {{ navigation(category) }}
+{% endblock %}
+
+{% block content %}  <!-- 内容区 -->
+    {{ embed_html('embed_templates/editor.html') }}
 {% endblock %}

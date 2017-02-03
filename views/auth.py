@@ -60,7 +60,7 @@ def logout():
 @instance.route('/auth/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'GET':
-        return render_template('/auth/register.html', category='edit')
+        return render_template('/auth/register.html', category='editor')
 
     token = session.pop('_csrf_token', None)
     if not token or token != request.form.get('_csrf_token'):

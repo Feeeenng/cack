@@ -1,0 +1,249 @@
+<style>
+    ul.emoji-list * {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+    ul.emoji-list li {
+        font-size: 36px;
+        float: left;
+        display: inline-block;
+        padding: 2px;
+        margin: 4px;
+    }
+    img.emoji {
+        cursor: pointer;
+        width: 24px;
+        height: 24px;
+        margin: 0 .05em 0 .1em;
+        vertical-align: -0.1em;
+    }
+    img.emoji:hover {
+        outline: 3px solid #c8c8c8;
+    }
+
+    img.emoji:active {
+        outline: 3px solid #00B5AD;
+    }
+</style>
+
+<div class="ui segment">
+    <div id="ueditor-container">
+    </div>
+    <div id="word_count">
+        <a class="ui label">
+            <i class="calculator icon"></i>0/140
+        </a>
+    </div>
+    <div style="margin: 12px 0px 0px 0px">
+        <div class="circular ui icon teal button emoji-btn" title="表情">
+            <i class="smile icon"></i>
+        </div>
+        <div class="ui fluid popup" id="emoji-box">
+            <ul class="emoji-list" id="emoji-list">
+                <!--表情-->
+                <li>&#x1F600;</li>
+                <li>&#x1F601;</li>
+                <li>&#x1F602;</li>
+                <li>&#x1F603;</li>
+                <li>&#x1F604;</li>
+                <li>&#x1F605;</li>
+                <li>&#x1F606;</li>
+                <li>&#x1F607;</li>
+                <li>&#x1F608;</li>
+                <li>&#x1F609;</li>
+                <li>&#x1F60A;</li>
+                <li>&#x1F60B;</li>
+                <li>&#x1F60C;</li>
+                <li>&#x1F60D;</li>
+                <li>&#x1F60E;</li>
+                <li>&#x1F60F;</li>
+                <li>&#x1F610;</li>
+                <li>&#x1F611;</li>
+                <li>&#x1F612;</li>
+                <li>&#x1F613;</li>
+                <li>&#x1F614;</li>
+                <li>&#x1F615;</li>
+                <li>&#x1F616;</li>
+                <li>&#x1F617;</li>
+                <li>&#x1F618;</li>
+                <li>&#x1F619;</li>
+                <li>&#x1F61A;</li>
+                <li>&#x1F61B;</li>
+                <li>&#x1F61C;</li>
+                <li>&#x1F61D;</li>
+                <li>&#x1F61E;</li>
+                <li>&#x1F61F;</li>
+                <li>&#x1F620;</li>
+                <li>&#x1F621;</li>
+                <li>&#x1F622;</li>
+                <li>&#x1F623;</li>
+                <li>&#x1F624;</li>
+                <li>&#x1F625;</li>
+                <li>&#x1F626;</li>
+                <li>&#x1F627;</li>
+                <li>&#x1F628;</li>
+                <li>&#x1F629;</li>
+                <li>&#x1F62A;</li>
+                <li>&#x1F62B;</li>
+                <li>&#x1F62C;</li>
+                <li>&#x1F62D;</li>
+                <li>&#x1F62E;</li>
+                <li>&#x1F62F;</li>
+                <li>&#x1F630;</li>
+                <li>&#x1F631;</li>
+                <li>&#x1F632;</li>
+                <li>&#x1F633;</li>
+                <li>&#x1F634;</li>
+                <li>&#x1F635;</li>
+                <li>&#x1F636;</li>
+                <li>&#x1F637;</li>
+                <li>&#x1F638;</li>
+                <li>&#x1F639;</li>
+                <li>&#x1F63A;</li>
+                <li>&#x1F63B;</li>
+                <li>&#x1F63C;</li>
+                <li>&#x1F63D;</li>
+                <li>&#x1F63E;</li>
+                <li>&#x1F63F;</li>
+                <li>&#x1F640;</li>
+                <li>&#x1F641;</li>
+                <li>&#x1F642;</li>
+                <li>&#x1F644;</li>
+                <li>&#x1F910;</li>
+                <li>&#x1f911;</li>
+                <li>&#x1f912;</li>
+                <li>&#x1f913;</li>
+                <li>&#x1f914;</li>
+                <li>&#x1f915;</li>
+                <li>&#x1f916;</li>
+                <li>&#x1f917;</li>
+                <li>&#x1f920;</li>
+                <li>&#x1f921;</li>
+                <li>&#x1f922;</li>
+                <li>&#x1f923;</li>
+                <li>&#x1f924;</li>
+                <li>&#x1f925;</li>
+                <li>&#x2639;</li>
+                <li>&#x263a;</li>
+                <li>&#x1f47d;</li>
+                <li>&#x1f47f;</li>
+                <li>&#x1f480;</li>
+
+                <!--手势-->
+                <li>&#x1f446;</li>
+                <li>&#x1f447;</li>
+                <li>&#x1f448;</li>
+                <li>&#x1f449;</li>
+                <li>&#x1f44a;</li>
+                <li>&#x1f44b;</li>
+                <li>&#x1f44c;</li>
+                <li>&#x1f44d;</li>
+                <li>&#x1f44e;</li>
+                <li>&#x1f44f;</li>
+                <li>&#x1f450;</li>
+                <li>&#x1f590;</li>
+                <li>&#x1f595;</li>
+                <li>&#x1f596;</li>
+                <li>&#x1f918;</li>
+                <li>&#x1f919;</li>
+                <li>&#x1f91a;</li>
+                <li>&#x1f91b;</li>
+                <li>&#x1f91c;</li>
+                <li>&#x1f91d;</li>
+                <li>&#x1f91e;</li>
+                <li>&#x261d;</li>
+                <li>&#x270a;</li>
+                <li>&#x270b;</li>
+                <li>&#x270c;</li>
+
+                <!--天气-->
+                <li>&#x2600;</li>
+                <li>&#x1f324;</li>
+                <li>&#x26c5;</li>
+                <li>&#x1f325;</li>
+                <li>&#x2601;</li>
+                <li>&#x1f326;</li>
+                <li>&#x1f327;</li>
+                <li>&#x1f328;</li>
+                <li>&#x1f329;</li>
+                <li>&#x26c8;</li>
+                <li>&#x1f4a8;</li>
+
+                <!--其他-->
+                <li>&#x1f35a;</li>
+                <li>&#x1f37a;</li>
+                <li>&#x1f381;</li>
+                <li>&#x1f382;</li>
+                <li>&#x1f385;</li>
+                <li>&#x1f383;</li>
+                <li>&#x1f3a8;</li>
+                <li>&#x1f3a5;</li>
+                <li>&#x1f3ae;</li>
+                <li>&#x1f3b2;</li>
+                <li>&#x1f3b5;</li>
+                <li>&#x1f525;</li>
+                <li>&#x1f493;</li>
+                <li>&#x1f494;</li>
+                <li>&#x1f528;</li>
+                <li>&#x1f52a;</li>
+                <li>&#x1f4ac;</li>
+                <li>&#x1f4b0;</li>
+                <li>&#x1f4af;</li>
+                <li>&#x1f4ad;</li>
+            </ul>
+        </div>
+
+        <div class="circular ui icon teal button img-btn" title="图片">
+            <i class="image icon"></i>
+        </div>
+
+        <div class="circular ui icon teal button" title="@好友">
+            <i class="at icon"></i>
+        </div>
+
+        <div class="circular ui icon teal button" title="发起话题">
+            <i class="hashtag icon"></i>
+        </div>
+
+        <div class="ui right floated black animated button" tabindex="0" id="send-my-trend" title="发表">
+            <div class="visible content">发表</div>
+            <div class="hidden content"><i class="share icon"></i></div>
+        </div>
+    </div>
+</div>
+<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/semantic-ui/2.2.4/semantic.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='lib/ueditor/ueditor.config.js') }}"></script>
+<script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='lib/ueditor/ueditor.all.min.js') }}"> </script>
+<script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='lib/ueditor/lang/zh-cn/zh-cn.js') }}"></script>
+<script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='js/vue/uediter.js') }}"></script>
+<script src="//twemoji.maxcdn.com/2/twemoji.min.js"></script>
+<script>
+    function addEmoji(obj){
+        var src = $(obj).attr('src');
+        ue.execCommand('inserthtml','<img src="'+src+'">');
+        show_word_count();
+    }
+        
+    var ul = document.getElementsByTagName('ul')[0];
+    twemoji.parse(ul, {"size":72});
+
+    $('.emoji-btn').popup({
+        on: 'click',
+        popup : $('#emoji-box'),
+        position : 'bottom left',
+        transition: 'vertical flip',
+        onShow: function(){
+            $('#emoji-list').show();
+        },
+        onHide: function () {
+            $('#emoji-list').hide();
+        }
+    });
+    
+    $('img.emoji').click(function () {
+        addEmoji(this);
+    });
+</script>
