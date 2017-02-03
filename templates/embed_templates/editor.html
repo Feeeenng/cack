@@ -221,6 +221,46 @@
 <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='js/common/uediter.js') }}"></script>
 <script src="//twemoji.maxcdn.com/2/twemoji.min.js"></script>
 <script>
+    function loadTrends() {
+        var url = '/trends/get_my_trends';
+        $('#trends-loading').addClass('active');
+        $.ajax({
+            async : false,
+            url: url,
+            type: "POST",
+            data: {
+                page: 1
+            },
+            dataType   : "json",
+            success: function(ret){
+                var success = ret["success"];
+                if(!success){
+                    alert('网络异常');
+                }
+                var detail = ret['detail'];
+                var data = detail['items'];
+                if(data.length==0){
+                    $('#no-trends').show();
+                } else {
+                    $('#no-trends').hide();
+                    $('#trends').empty();
+                    for(var i in data){
+                        $('#trends').append('<div class="ui black raised segment trend">' +
+                            '<div class="ui feed"><div class="event"><div class="label"><img src="{{ current_user.avatar }}">'+
+                            '</div><div class="content"><div class="summary"><a class="user">{{ current_user }}</a>'+
+                            '<div class="date">'+ data[i]['created_at'] +'</div></div><div class="extra text">'+ data[i]['content'] +
+                            '</div><div class="meta"><a class="like"><i class="like icon"></i> 4 </a></div></div></div></div><div class="ui divider"></div></div>');
+                    }
+                }
+                $('#trends-loading').removeClass('active');
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        loadTrends();
+    });
+
     function addEmoji(obj){
         var src = $(obj).attr('src');
         ue.execCommand('inserthtml','<img src="'+src+'">');
@@ -250,6 +290,7 @@
     $('#send-my-trend').click(function(){
         var url = '/trends/send_trend';
         if(!ue.hasContents()){
+            $('#word_count').empty().append('<a class="ui label"><i class="calculator icon"></i>0/'+limit_word_count+'还是说的什么吧</a>');
             return;
         }
         var count = word_calculator();
@@ -268,11 +309,12 @@
             }),
             dataType   : "json",
             success: function(ret){
-                success = ret["success"];
+                var success = ret["success"];
                 if(!success){
                     alert('网络异常');
                 }
-
+                ue.setContent('');
+                loadTrends();
             }
         });
     });

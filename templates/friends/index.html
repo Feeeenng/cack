@@ -4,6 +4,16 @@
     Cack|朋友
 {% endblock %}
 
+{% block styles %}
+    {{ super() }}
+    <style>
+        .trend img {
+            width: 24px;
+            height: 24px;
+        }
+    </style>
+{% endblock %}
+
 {% block navigation %}
     {{ navigation(category) }}
 {% endblock %}
@@ -25,6 +35,9 @@
             </a>
 
             <div class="ui basic center aligned segment">
+                <div class="ui dimmer" id="trends-loading">
+                    <div class="ui large text loader">Loading</div>
+                </div>
                 <h2 class="ui icon disabled header" id="no-trends">
                     <i class="frown icon"></i>
                     <div class="content">

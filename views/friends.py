@@ -51,11 +51,11 @@ def calculate_words(content):
     return count1 + count2
 
 
-@instance.route('/trends/get_trends')
+@instance.route('/trends/get_my_trends', methods=['POST'])
 def get_trends():
     per_page = 10
     page = request.form.get('page', 1, int)
-    ts = Trend.objects(uid=current_user.id, deleted_at=None)
+    ts = Trend.objects(uid=current_user.id, deleted_at=None).order_by('-created_at')
     total = ts.count()
     ts = ts[(page - 1) * per_page: page * per_page]
     items = [t.as_dict() for t in ts]

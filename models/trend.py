@@ -23,6 +23,8 @@ class Trend(BaseDocument):
     def as_dict(self):
         dic = dict(self.to_mongo())
         dic['created_at'] = datetime_op(dic['created_at'])
-        del dic['updated_at']
-        del dic['deleted_at']
+        if 'updated_at' in dic:
+            del dic['updated_at']
+        if 'deleted_at' in dic:
+            del dic['deleted_at']
         return dic
