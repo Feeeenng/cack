@@ -218,7 +218,7 @@
 <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='lib/ueditor/ueditor.config.js') }}"></script>
 <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='lib/ueditor/ueditor.all.min.js') }}"> </script>
 <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='lib/ueditor/lang/zh-cn/zh-cn.js') }}"></script>
-<script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='js/vue/uediter.js') }}"></script>
+<script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='js/common/uediter.js') }}"></script>
 <script src="//twemoji.maxcdn.com/2/twemoji.min.js"></script>
 <script>
     function addEmoji(obj){
@@ -226,7 +226,7 @@
         ue.execCommand('inserthtml','<img src="'+src+'">');
         show_word_count();
     }
-        
+
     var ul = document.getElementsByTagName('ul')[0];
     twemoji.parse(ul, {"size":72});
 
@@ -245,5 +245,35 @@
     
     $('img.emoji').click(function () {
         addEmoji(this);
+    });
+
+    $('#send-my-trend').click(function(){
+        var url = '/trends/send_trend';
+        if(!ue.hasContents()){
+            return;
+        }
+        var count = word_calculator();
+        // 设置显示
+        if(limit_word_count < count){
+            return;
+        }
+
+        var content = ue.getContent();
+        $.ajax({
+            async : false,
+            url: url,
+            type: "POST",
+            data: JSON.stringify({
+                content: content
+            }),
+            dataType   : "json",
+            success: function(ret){
+                success = ret["success"];
+                if(!success){
+                    alert('网络异常');
+                }
+
+            }
+        });
     });
 </script>

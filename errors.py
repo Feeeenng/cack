@@ -14,6 +14,7 @@ class Errors(object):
     AUTH_REGISTER_INFO_ERROR = 401
     AUTH_FORGET_PASSWORD_ERROR = 402
     QINIU_ERROR = 500
+    WORDS_COUNT_LIMITATION = 550
     COMMON_ERROR = 999
 
     # error map
@@ -28,6 +29,7 @@ class Errors(object):
         AUTH_REGISTER_INFO_ERROR: '注册信息错误: {0}',
         AUTH_FORGET_PASSWORD_ERROR: '用户名和邮箱不匹配',
         QINIU_ERROR: '上传相关错误：{0}',
+        WORDS_COUNT_LIMITATION: '字数超出限制',
         COMMON_ERROR: '{0}'
     }
 

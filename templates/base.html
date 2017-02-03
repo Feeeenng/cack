@@ -51,19 +51,19 @@
                 <a class="teal item {{ 'active' if active == 'shop' else '' }}">
                     <i class="shop icon"></i> 商品
                 </a>
-                <a class="teal item {{ 'active' if active == 'users' else '' }}">
+                <a class="teal item {{ 'active' if active == 'users' else '' }}" href="/friends">
                     <i class="users icon"></i> 朋友
                 </a>
                 <a class="teal item {{ 'active' if active == 'comment' else '' }}">
                     <i class="comment icon"></i> 事件
                 </a>
 
-                <div class="right menu">
+                <div class="right menu" style="z-index: 1000">
                     {% if current_user.is_authenticated %}
                         <a class="ui black label">
                             <div class="ui inline combo top right pointing dropdown">
-                                <img class="ui right spaced avatar image" src="http://www.semantic-ui.cn/images/avatar/small/elliot.jpg">
-                                Elliot
+                                <img class="ui right spaced avatar image" src="{{ current_user.avatar }}">
+                                {{ current_user.nickname }}
                                 <i class="dropdown icon"></i>
                                 <div class="menu">
                                     <div class="item" id="user_info"><i class="edit icon"></i> 用户信息 </div>

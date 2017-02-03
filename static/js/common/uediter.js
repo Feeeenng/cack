@@ -18,7 +18,7 @@ function show_word_count(){
     var count = word_calculator();
     // 设置显示
     if(limit_word_count < count){
-        $('#word_count').empty().append('<a class="ui label" style="color:#ff565d"><i class="calculator icon"></i>'+count+'/'+limit_word_count+'</a>')
+        $('#word_count').empty().append('<a class="ui label" style="color:#ff565d"><i class="calculator icon"></i>'+count+'/'+limit_word_count+' 超出字数限制</a>')
     } else {
         $('#word_count').empty().append('<a class="ui label"><i class="calculator icon"></i>'+count+'/'+limit_word_count+'</a>')
     }
