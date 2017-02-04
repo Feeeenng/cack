@@ -7,9 +7,16 @@
 {% block styles %}
     {{ super() }}
     <style>
-        .trend img {
+        .trend img[class="emoji"] {
             width: 24px;
             height: 24px;
+        }
+
+        .top-trend:hover,
+        .delete-trend:hover {
+            color: white!important;
+            background-color: #000000!important;
+            outline: 1px solid rgba(34,36,38,.15)!important;
         }
     </style>
 {% endblock %}
@@ -33,7 +40,7 @@
         </div>
 
         <div class="ui piled segment" style="width: 60%;margin-left: 20%;">
-            <a class="ui teal teal ribbon label">
+            <a class="ui teal ribbon label">
                 <i class="talk outline icon"></i>动态
             </a>
 
@@ -50,13 +57,23 @@
 
                 <div id="trends">
                     <!-- 动态列表 -->
-{#                    <div class="ui black raised segment">#}
+{#                    <div class="ui black raised segment trend" data-tid='111111'>#}
+{#                        <a class="ui red ribbon label the-top" style="float: left;margin-bottom: 2%"><i class="pin icon"></i>置顶</a>#}
 {#                        <div class="ui feed">#}
 {#                            <div class="event">#}
 {#                                <div class="label">#}
 {#                                    <img src="http://www.semantic-ui.cn/images/avatar/small/elliot.jpg">#}
 {#                                </div>#}
 {#                                <div class="content">#}
+{#                                    <div style="float: right">#}
+{#                                        <div class="ui icon top left pointing dropdown button">#}
+{#                                            <i class="settings icon"></i>#}
+{#                                            <div class="menu">#}
+{#                                                <div class="item top-trend"><i class="pin icon"></i>置顶</div>#}
+{#                                                <div class="item delete-trend"><i class="trash icon"></i>删除</div>#}
+{#                                            </div>#}
+{#                                        </div>#}
+{#                                    </div>#}
 {#                                    <div class="summary"><a class="user"> Elliot Fu </a> added you as a friend <div class="date">1 Hour Ago </div>#}
 {#                                    </div>#}
 {#                                    <div class="extra text">I'm having a BBQ this weekend. Come by around 4pm if you can.</div>#}

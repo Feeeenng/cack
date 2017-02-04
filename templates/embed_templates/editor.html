@@ -221,6 +221,25 @@
 <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='js/common/uediter.js') }}"></script>
 <script src="//twemoji.maxcdn.com/2/twemoji.min.js"></script>
 <script>
+    function cancelTopDisplay(tid) {
+        var url = '/trends/cancel_top';
+        $.ajax({
+            async : false,
+            url: url,
+            type: "POST",
+            data: {
+                tid: tid
+            },
+            dataType   : "json",
+            success: function(ret){
+                var success = ret["success"];
+                if(!success){
+                    alert('网络异常');
+                }
+            }
+        });
+    }
+
     function loadTrends() {
         var url = '/trends/get_my_trends';
         $('#trends-loading').addClass('active');
@@ -245,16 +264,73 @@
                     $('#no-trends').hide();
                     $('#trends').empty();
                     for(var i in data){
-                        $('#trends').append('<div class="ui black raised segment trend">' +
+                        var a = data[i]['top'] ? '<a class="ui red ribbon label" onclick="cancel(this)" style="float: left;margin-bottom: 2%"><i class="pin icon"></i>置顶</a>': '';
+                        $('#trends').append('<div class="ui black raised segment trend" data-tid="'+ data[i]['_id'] +'">' +
+                            a +
                             '<div class="ui feed"><div class="event"><div class="label"><img src="{{ current_user.avatar }}">'+
-                            '</div><div class="content"><div class="summary"><a class="user">{{ current_user.nickname }}</a>'+
+                            '</div><div class="content">'+ '<div style="float: right"><div class="ui icon top left black pointing dropdown button">'+
+                            '<i class="settings icon"></i><div class="menu"><div class="item top-trend" onclick="setTopTrend(this)"><i class="pin icon">'+
+                            '</i>置顶</div><div class="item delete-trend" onclick="deleteTrend(this)"><i class="trash icon"></i>删除</div></div></div></div>'+
+                            '<div class="summary"><a class="user">{{ current_user.nickname }}</a>'+
                             '<div class="date">'+ data[i]['created_at'] +'</div></div><div class="extra text">'+ data[i]['content'] +
                             '</div><div class="meta"><a class="like"><i class="like icon"></i> 4 </a></div></div></div></div></div>');
                     }
                 }
                 $('#trends-loading').removeClass('active');
+                $('.dropdown').dropdown({
+                     action: 'combo'
+                });
             }
         });
+    }
+
+    function setTopTrend(obj) {
+        var tid = $(obj).parents('.trend').data('tid');
+        var url = '/trends/set_top';
+        $.ajax({
+            async : false,
+            url: url,
+            type: "POST",
+            data: {
+                tid: tid
+            },
+            dataType   : "json",
+            success: function(ret){
+                var success = ret["success"];
+                if(!success){
+                    alert('网络异常');
+                }
+                loadTrends();
+            }
+        });
+    }
+
+    function deleteTrend(obj) {
+        var tid = $(obj).parents('.trend').data('tid');
+        var url = '/trends/delete';
+        $.ajax({
+            async : false,
+            url: url,
+            type: "POST",
+            data: {
+                tid: tid
+            },
+            dataType   : "json",
+            success: function(ret){
+                var success = ret["success"];
+                if(!success){
+                    alert('网络异常');
+                }
+                loadTrends();
+            }
+        });
+    }
+
+    function cancel(obj) {
+        $(obj).hide();
+        var tid = $(this).parent().data('tid');
+        cancelTopDisplay(tid);
+        loadTrends();
     }
 
     $(document).ready(function () {
@@ -263,7 +339,7 @@
 
     function addEmoji(obj){
         var src = $(obj).attr('src');
-        ue.execCommand('inserthtml','<img src="'+src+'">');
+        ue.execCommand('inserthtml','<img class="emoji" src="'+src+'">');
         show_word_count();
     }
 
@@ -314,6 +390,7 @@
                     alert('网络异常');
                 }
                 ue.setContent('');
+                show_word_count();
                 loadTrends();
             }
         });

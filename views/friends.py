@@ -55,7 +55,7 @@ def calculate_words(content):
 def get_trends():
     per_page = 10
     page = request.form.get('page', 1, int)
-    ts = Trend.objects(uid=current_user.id, deleted_at=None).order_by('-created_at')
+    ts = Trend.objects(uid=current_user.id, deleted_at=None).order_by('-top', '-created_at')
     total = ts.count()
     ts = ts[(page - 1) * per_page: page * per_page]
     items = [t.as_dict() for t in ts]
@@ -66,3 +66,45 @@ def get_trends():
         'total': total
     }
     return res(data=data)
+
+
+@instance.route('/trends/set_top', methods=['POST'])
+def set_top():
+    tid = request.form.get('tid')
+    if not tid:
+        return res(code=Errors.PARAMS_REQUIRED)
+
+    t = Trend.objects(id=tid, uid=current_user.id, deleted_at=None).first()
+    if not t:
+        return res(code=Errors.NOT_FOUND)
+
+    t.set_the_top_one()
+    return res()
+
+
+@instance.route('/trends/delete', methods=['POST'])
+def delete():
+    tid = request.form.get('tid')
+    if not tid:
+        return res(code=Errors.PARAMS_REQUIRED)
+
+    t = Trend.objects(id=tid, uid=current_user.id, deleted_at=None).first()
+    if not t:
+        return res(code=Errors.NOT_FOUND)
+
+    t.delete()
+    return res()
+
+
+@instance.route('/trends/cancel_top', methods=['POST'])
+def cancel_top():
+    tid = request.form.get('tid')
+    if not tid:
+        return res(code=Errors.PARAMS_REQUIRED)
+
+    t = Trend.objects(id=tid, uid=current_user.id, deleted_at=None).first()
+    if not t:
+        return res(code=Errors.NOT_FOUND)
+
+    t.cancel_top_display()
+    return res()
