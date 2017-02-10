@@ -31,6 +31,7 @@ def index():
 def send_trend():
     r = request.get_json(True)
     content = r.get('content')
+    urls = r.get('urls')
     if not content:
         return res(code=Errors.PARAMS_REQUIRED)
 
@@ -40,6 +41,7 @@ def send_trend():
     t = Trend()
     t.content = content
     t.uid = current_user.id
+    t.image_urls = urls
     t.save()
     return res()
 

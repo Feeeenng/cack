@@ -1,6 +1,217 @@
 <div class="ui basic segment" id="uploader-box" hidden>
     <div style="float: right;cursor: pointer;" title="关闭" onclick="closeUploaderBox()"><i class="close icon"></i></div>
-    <p>sssssssssssssssssssssss</p>
-    <p>sssssssssssssssssssssss</p>
-    <p>sssssssssssssssssssssss</p>
+    <div class="ui basic right aligned segment">
+        <div id="uploader">
+            <!--用来存放文件信息-->
+            <div class="ui container">
+                <div id="fileList" class="ui grid" style="text-align: center"></div>
+            </div>
+            <div id="fileUrlList"></div>
+        </div>
+
+        <div class="ui buttons" style="margin-top: 5%">
+            <div class="ui animated fade positive button" tabindex="0" id="filePicker">
+                <div class="visible content"><i class="plus square outline icon"></i></div>
+                <div class="hidden content">选择</div>
+            </div>
+            <div class="or" data-text="and"></div>
+            <div class="ui animated fade primary button" tabindex="0" id="submitBtn">
+                <div class="visible content"><i class="upload icon"></i></div>
+                <div class="hidden content">上传</div>
+            </div>
+        </div>
+
+    </div>
+
 </div>
+
+<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+<!-- webUploader使用相关js -->
+<script src="static/lib/webUploader/webuploader.min.js"></script>
+<script>
+    var thumbWidth = 150;
+    var thumbHeight = 150;
+    var uploader = WebUploader.create({
+
+        // 选完文件后，是否自动上传。
+        auto: false,
+
+        // swf文件路径
+        swf: '{{ url_for('static', filename='lib/webUploader/Uploader.swf') }}',
+
+        // 文件接收服务端。
+        server: '/file/upload',
+
+        // 选择文件的按钮。可选。
+        // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+        pick: '#filePicker',
+
+        // 只允许选择图片文件。
+        accept: {
+          title: 'Images',
+          extensions: 'jpg,jpeg,png,gif',
+          mimeTypes: 'image/jpg,image/jpeg,image/png,image/gif'   //修改这行
+        },
+
+        thumb: {
+            width: thumbWidth,
+            height: thumbHeight,
+
+            // 图片质量，只有type为`image/jpeg`的时候才有效。
+            quality: 70,
+
+            // 是否允许放大，如果想要生成小图的时候不失真，此选项应该设置为false.
+            allowMagnify: true,
+
+            // 是否允许裁剪。
+            crop: true,
+
+            // 为空的话则保留原有图片格式。
+            // 否则强制转换成指定的类型。
+            type: 'image/jpg,image/jpeg,image/png,image/gif'
+        },
+
+        // 验证文件总数量, 超出则不允许加入队列
+        fileNumLimit: 8,
+
+        // 验证文件总大小是否超出限制, 超出则不允许加入队列
+        fileSizeLimit: 5*1024*1024,  // 5M
+
+        // 验证单个文件大小是否超出限制, 超出则不允许加入队
+        fileSingleSizeLimit: 1024*1024,  // 1M
+
+        // 去重， 根据文件名字、文件大小和最后修改时间来生成hash key
+        duplicate: true,
+
+        method: 'POST'
+    });
+
+    // 当有文件添加进来的时候
+    uploader.on( 'fileQueued', function( file ) {
+        var $li = $(
+                '<div id="' + file.id + '" class="four wide column" style="">' +
+
+                    '<div class="ui fluid image">' +
+                        '<a class="ui right corner label" data-id="' + file.id + '" onclick="removeFile(this)">' +
+                            '<i class="trash icon"></i>' +
+                        '</a>' +
+                        '<img>' +
+                    '<div>' +
+                '</div>'
+                ),
+            $img = $li.find('img');
+
+        // $list为容器jQuery实例
+        var $list = $('#fileList');
+        $list.append( $li );
+
+        // 创建缩略图
+        // 如果为非图片文件，可以不用调用此方法。
+        // thumbnailWidth x thumbnailHeight 为 100 x 100
+        uploader.makeThumb( file, function( error, src ) {
+            if ( error ) {
+                $img.replaceWith('<span>不能预览</span>');
+                return;
+            }
+
+            $img.attr('src', src );
+            $img.attr('class', 'ui small rounded bordered image trend-image');
+            $img.attr('title', file.name );
+            $img.attr('style', 'cursor:pointer');
+            $img.attr('data-current', 0);
+            $img.attr('onclick', 'rotateImage(this)')
+        }, thumbWidth, thumbHeight );
+    });
+
+    // 文件上传过程中创建进度条实时显示。
+    uploader.on( 'uploadProgress', function( file, percentage ) {
+        var $li = $( '#'+file.id ),
+            $percent = $li.find('.progress');
+
+        // 避免重复创建
+        if ( !$percent.length ) {
+            $percent = $(
+                    '<div class="ui blue active progress">'+
+                        '<div class="bar">'+
+                            '<div class="progress">'+
+                                percentage * 100 +
+                            '%</div>'+
+                        '</div>'+
+                        '<div class="label">' +
+                            newSubString(file.name) +
+                        '</div>'+
+                    '</div>')
+                    .appendTo( $li )
+                    .find('span');
+        }
+
+        $percent.progress({percent: percentage * 100});
+    });
+
+    // 文件上传成功，给item添加成功class, 用样式标记上传成功。
+    uploader.on( 'uploadSuccess', function( file, response ) {
+        $( '#'+file.id ).addClass('upload-state-done');
+        var deg = $( '#'+file.id+' img' ).data('current');
+        var url = response['detail']['url'] + '&imageMogr2/rotate/' + deg;
+        $('#fileUrlList').append('<input type="hidden" name="urls[]" value="' + url + '" data-id="'+file.id+'">');
+
+        $('.image img').removeAttr('onclick');
+    });
+
+    // 文件上传失败，显示上传出错。
+    uploader.on( 'uploadError', function( file ) {
+        var $li = $( '#'+file.id ),
+            $error = $li.find('div.error');
+
+        // 避免重复创建
+        if ( !$error.length ) {
+            $error = $('<div class="error"></div>').appendTo( $li );
+        }
+
+        $error.text('上传失败');
+    });
+
+    // 完成上传完了，成功或者失败，先删除进度条。
+{#    uploader.on( 'uploadComplete', function( file ) {#}
+{#        $( '#'+file.id ).find('.progress').remove();#}
+{#    });#}
+
+    $('#submitBtn').on( 'click', function() {
+		uploader.upload();
+	 });
+    $(function(){
+        $("#filePicker").children("div:eq(0)").siblings('div').css({width:"100%",height:"100%"})
+    });
+
+    function newSubString(str) {
+        var name = str;
+        if(str.length>20){
+            name = str.substr(0,17) + '...';
+        }
+        return name;
+    }
+
+    function rotateImage(obj) {
+        var current = $(obj).data('current');
+        current = parseInt(current);
+        current = (current + 90) % 360;
+        $(obj).css({'transform':'rotate('+current+'deg)'});
+        $(obj).data('current', '' + current);
+    }
+
+    function removeFile(obj) {
+        var file_id = $(obj).data('id');
+        uploader.removeFile( file_id, true );
+        $('#'+file_id).remove();
+        $('#fileUrlList input[data-id="'+ file_id +'"]').remove();
+    }
+
+    function cleanAllImages() {
+        var files = uploader.getFiles();
+        for(var i in files){
+            uploader.removeFile(files[i].id, true);
+            $('#'+files[i].id).remove();
+            $('#fileUrlList input[data-id="'+ files[i].id +'"]').remove();
+        }
+    }
+</script>

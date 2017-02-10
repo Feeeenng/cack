@@ -1,3 +1,4 @@
+<link rel="stylesheet" charset="utf-8" type="text/css" href="static/lib/webUploader/webuploader.css">
 <style>
     ul.emoji-list * {
         -webkit-user-select: none;
@@ -218,8 +219,10 @@
     </div>
 
 </div>
+
 <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/semantic-ui/2.2.4/semantic.min.js"></script>
+
 <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='lib/ueditor/ueditor.config.js') }}"></script>
 <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='lib/ueditor/ueditor.all.min.js') }}"> </script>
 <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='lib/ueditor/lang/zh-cn/zh-cn.js') }}"></script>
@@ -381,12 +384,19 @@
         }
 
         var content = ue.getContent();
+
+        var urls = [];
+        $('#fileUrlList input[name="urls[]"]').each(function () {
+            var v = $(this).attr('value');
+            urls.push(v);
+        });
         $.ajax({
             async : false,
             url: url,
             type: "POST",
             data: JSON.stringify({
-                content: content
+                content: content,
+                urls: urls
             }),
             dataType   : "json",
             success: function(ret){
@@ -397,15 +407,17 @@
                 ue.setContent('');
                 show_word_count();
                 loadTrends();
+                cleanAllImages();
+                $('#uploader-box').attr('hidden', 'true').attr('style', 'display: none !important;');
             }
         });
     });
 
     function show_uploader_box() {
-        $('#uploader-box').transition('vertical flip')
+        $('#uploader-box').transition('vertical flip');
     }
 
     function closeUploaderBox() {
-        $('#uploader-box').transition('vertical flip')
+        $('#uploader-box').transition('vertical flip');
     }
 </script>

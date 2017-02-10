@@ -25,7 +25,9 @@ def datetime_op(date_time):
     elif str(date_time)[:10] == str(yesterday):
         return '昨天 ' + str(date_time)[11:]
 
-    return str(date_time)
+    else:
+        return format_datetime(date_time, '%Y-%m-%d %H:%M:%S')
+
 
 # date_time = datetime.datetime.now()
 # print datetime_op(date_time)

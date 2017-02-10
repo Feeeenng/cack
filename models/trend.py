@@ -12,6 +12,7 @@ from utils.datetime_utils import datetime_op, now_lambda
 class Trend(BaseDocument):
     uid = StringField(required=True)  # 发表人
     content = StringField()  # 内容
+    image_urls = ListField(StringField(), default=[])  # 图片列表
     top = BooleanField(default=False)  # 置顶
     # todo: 添加点赞、评论和回复
 
