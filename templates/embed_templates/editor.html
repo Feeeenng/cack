@@ -266,11 +266,11 @@
                 }
                 var detail = ret['detail'];
                 var data = detail['items'];
+                $('#trends').empty();
                 if(data.length==0){
                     $('#no-trends').show();
                 } else {
                     $('#no-trends').hide();
-                    $('#trends').empty();
                     for(var i in data){
                         var a = data[i]['top'] ? '<a class="ui red ribbon label" onclick="cancel(this)" style="float: left;margin-bottom: 2%"><i class="pin icon"></i>置顶</a>': '';
                         $('#trends').append('<div class="ui black raised segment trend" data-tid="'+ data[i]['_id'] +'">' +
