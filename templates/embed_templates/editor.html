@@ -272,6 +272,17 @@
                 } else {
                     $('#no-trends').hide();
                     for(var i in data){
+                        var s = '';
+                        for(var l in data[i]['image_urls']){
+                            s += '<div class="four wide column" style="">' +
+                                '<div class="ui fluid image">' +
+                                    '<img class="ui small rounded bordered image trend-image"' +
+                                    'src="'+ data[i]['image_urls'][l] +'"' +
+                                         'style="cursor:pointer;width: 150px;height: 150px">' +
+                                '</div>'+
+                            '</div>'
+                        }
+
                         var a = data[i]['top'] ? '<a class="ui red ribbon label" onclick="cancel(this)" style="float: left;margin-bottom: 2%"><i class="pin icon"></i>置顶</a>': '';
                         $('#trends').append('<div class="ui black raised segment trend" data-tid="'+ data[i]['_id'] +'">' +
                             a +
@@ -281,7 +292,10 @@
                             '</i>置顶</div><div class="item delete-trend" onclick="deleteTrend(this)"><i class="trash icon"></i>删除</div></div></div></div>'+
                             '<div class="summary"><a class="user">{{ current_user.nickname }}</a>'+
                             '<div class="date">'+ data[i]['created_at'] +'</div></div><div class="extra text">'+ data[i]['content'] +
-                            '</div><div class="meta"><a class="like"><i class="like icon"></i> 4 </a></div></div></div></div></div>');
+                            '</div><div class="meta"><a class="like"><i class="like icon"></i> 4 </a></div>'+
+                            '<div id="imageList" class="ui grid" style="text-align: center;margin-top: 2%">' +
+                            s +'</div>' +
+                            '</div></div></div></div>');
                     }
                 }
                 $('#trends-loading').removeClass('active');
@@ -408,7 +422,7 @@
                 show_word_count();
                 loadTrends();
                 cleanAllImages();
-                $('#uploader-box').attr('hidden', 'true').attr('style', 'display: none !important;');
+                $('#closeBox').click();
             }
         });
     });

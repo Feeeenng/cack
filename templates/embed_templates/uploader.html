@@ -1,5 +1,5 @@
 <div class="ui basic segment" id="uploader-box" hidden>
-    <div style="float: right;cursor: pointer;" title="关闭" onclick="closeUploaderBox()"><i class="close icon"></i></div>
+    <div style="float: right;cursor: pointer;" title="关闭" onclick="closeUploaderBox()" id="closeBox"><i class="close icon"></i></div>
     <div class="ui basic right aligned segment">
         <div id="uploader">
             <!--用来存放文件信息-->
@@ -211,7 +211,7 @@
         for(var i in files){
             uploader.removeFile(files[i].id, true);
             $('#'+files[i].id).remove();
-            $('#fileUrlList input[data-id="'+ files[i].id +'"]').remove();
         }
+        $('#fileUrlList').empty();
     }
 </script>
