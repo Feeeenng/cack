@@ -40,3 +40,4 @@ def file_type(f):
             ftype = tl[hcode]
             break
     return ftype
+
