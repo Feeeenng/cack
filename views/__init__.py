@@ -12,8 +12,8 @@ from datetime import datetime
 from app import cache
 
 # 缓存方法
-memoize = cache.memoize  # 用于缓存费视图函数，以函数名以及参数进行缓存
-cached = cache.cached  # 用户缓存视图函数，以request.path进行缓存
+memoize = cache.memoize  # 用于缓存结果，以函数名以及参数进行缓存
+cached = cache.cached  # 用于缓存视图函数，以request.path进行缓存
 
 
 def res(code=Errors.SUCCESS, data=None, error=None, extra_msg=None):

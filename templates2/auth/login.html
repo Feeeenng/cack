@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Cack|登录
+{% endblock %}
+
+{% block styles %}
+    {{ super() }}
+    <style type="text/css">
+        body > .grid {
+            height: 100%;
+        }
+        .column {
+            max-width: 450px;
+        }
+        #remember_style {
+            position: relative;
+            text-align: left;
+        }
+    </style>
+{% endblock %}
+
+{% block navigation %}
+    {{ navigation(category) }}
+{% endblock %}
+
+{% block content %}
+    <div class="ui main container" style="top: 10%;position: relative">
+        <div class="ui middle aligned center aligned grid">
+            <div class="column">
+                <form class="ui large form" id="login-form" action="{{ request.url }}" method="post">
+                    <h3 class="ui teal image header">
+                        <img src="{{ url_for('static2', filename='icon/cack.ico') }}" class="image">
+                        <div class="content">
+                            登录cack
+                            <i class="sign in icon"></i>
+                        </div>
+                    </h3>
+                    <div class="ui stacked segment">
+                        <div class="filed">
+                            <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}" />
+                        </div>
+                        <div class="field">
+                            <div class="ui left icon input">
+                                <i class="user icon"></i>
+                                <input type="text" name="username" placeholder="用户名">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui left icon input">
+                                <i class="lock icon"></i>
+                                <input type="password" name="password" placeholder="密码">
+                            </div>
+                        </div>
+                        <div class="field" id="remember_style">
+                            <div class="ui toggle checkbox">
+                                <input type="checkbox" name="remember" value="remember">
+                                <label>记住我</label>
+                            </div>
+                        </div>
+                        <div class="ui fluid large teal submit button" id="login">登录</div>
+                    </div>
+
+                    <div class="ui error message"></div>
+
+                </form>
+
+                <div class="ui message">
+                    加入cack? <a href="{{ url_for('auth.register') }}" style="color: #00B5AD">注册</a>|
+                    <a href="{{ url_for('auth.forget_password') }}" style="color: #36648B">忘记登录密码？</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script src="{{ url_for('static2', filename='js/auth/login.js') }}"></script>
+{% endblock %}

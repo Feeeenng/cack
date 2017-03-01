@@ -4,6 +4,33 @@
     Cack|主页
 {% endblock %}
 
-{% block navigation %}
-    {{ navigation(category) }}
+{% block styles %}
+    {{ super() }}
+    <style type="text/css">
+        body > .grid {
+            height: 100%;
+        }
+        .column {
+            max-width: 450px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}  <!-- 内容区 -->
+    {% if current_user.is_authenticated %}
+
+    {% else %}
+        {{ embed_html('auth/login.html') }}
+    {% endif %}
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script>
+        $('#sign_up_icon').popup({
+            position : 'right center',
+            target   : '#sign_up_icon',
+            title    : 'New to us?Sign Up'
+        });
+    </script>
 {% endblock %}

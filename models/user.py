@@ -50,7 +50,7 @@ class User(UserMixin, BaseDocument):
         return self.password == md5.add_salt(current_app.config.get('SALT'))
 
     @classmethod
-    def register(cls, username, password, confirm, email):
+    def signup(cls, username, password, confirm, email):
         msgs = []
         if not username:
             msgs.append('用户名不能为空')

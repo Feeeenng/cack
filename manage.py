@@ -12,7 +12,7 @@ from app import create_app
 # manager配置
 cack = create_app()
 manager = Manager(cack)
-manager.add_command("runserver", Server(threaded=True))
+manager.add_command("runserver", Server(threaded=True, port=8888))
 
 
 @cack.before_request

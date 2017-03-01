@@ -21,11 +21,8 @@ def before_request():
     pass
 
 
-@instance.route('/auth/login', methods=['GET', 'POST'])
+@instance.route('/login', methods=['POST'])
 def login():
-    if request.method == 'GET':
-        return render_template('/auth/login.html', category='sign in')
-
     username = request.form.get('username')
     password = request.form.get('password')
     remember = request.form.get('remember')
@@ -46,7 +43,7 @@ def login():
     return res(data={'url': request.args.get('next') or url_for('index.index')})
 
 
-@instance.route('/auth/logout')
+@instance.route('/logout')
 @login_required
 def logout():
     for key in ['identity.id', 'identity.auth_type']:
@@ -57,28 +54,28 @@ def logout():
     return redirect(url_for('index.index'))
 
 
-@instance.route('/auth/register', methods=['GET', 'POST'])
-def register():
+@instance.route('/signup', methods=['GET', 'POST'])
+def signup():
     if request.method == 'GET':
-        return render_template('/auth/register.html', category='editor')
+        return render_template('/auth/signup.html')
 
     token = session.pop('_csrf_token', None)
     if not token or token != request.form.get('_csrf_token'):
         abort(403)
 
-    username = request.form.get('username', '')
+    email = request.form.get('email', '')
     password = request.form.get('password', '')
     confirm = request.form.get('confirm', '')
-    email = request.form.get('email', '')
+    nickname = request.form.get('nickname', '')
 
     params = {
-        'username': username,
+        'email': email,
         'password': password,
         'confirm': confirm,
-        'email': email
+        'nickname': nickname
     }
 
-    msgs = User.register(**params)
+    msgs = User.signup(**params)
     if msgs:
         return res(code=Errors.AUTH_REGISTER_INFO_ERROR, extra_msg=[' | '.join(msgs)])
 
@@ -86,7 +83,7 @@ def register():
     return redirect(url_for('auth.login'))
 
 
-@instance.route('/auth/email_confirm/<token>', methods=['GET'])
+@instance.route('/email_confirm/<token>', methods=['GET'])
 @login_required
 def confirm(token):
     if current_user.is_confirmed:
@@ -99,7 +96,7 @@ def confirm(token):
     return redirect(url_for('index.index'))
 
 
-@instance.route('/auth/forget_password', methods=['GET', 'POST'])
+@instance.route('/forget_password', methods=['GET', 'POST'])
 def forget_password():
     if request.method == 'GET':
         return render_template('/auth/forget_password.html')
@@ -119,10 +116,10 @@ def forget_password():
     return res(data={'url': request.args.get('next') or url_for('index.index')})
 
 
-@instance.route('/auth/reset_password/<token>/<email>', methods=['GET', 'POST'])
+@instance.route('/reset_password/<token>/<email>', methods=['GET', 'POST'])
 def reset_password(token, email):
     if request.method == 'GET':
-        return render_template('/auth/reset_password.html')
+        return render_template('/reset_password.html')
 
     password = request.form.get('password')
     confirm = request.form.get('confirm')
@@ -151,8 +148,17 @@ def reset_password(token, email):
     return res(data={'url': request.args.get('next') or url_for('auth.login')})
 
 
+@instance.route('/send_captcha', methods=['POST'])
+def send_captcha():
+    email = request.form.get('email')
+    if not email:
+        return res(code=Errors.PARAMS_REQUIRED)
+    # todo: 发邮件
+    return res()
+
+
 # ################# ajax请求 ################# #
-@instance.route('/auth/username_regex', methods=['POST'])
+@instance.route('/username_regex', methods=['POST'])
 def username_regex():
     # 检查username格式
     r = request.get_json(force=True)
@@ -160,7 +166,7 @@ def username_regex():
     return res(data=regex_username(username))
 
 
-@instance.route('/auth/password_regex', methods=['POST'])
+@instance.route('/password_regex', methods=['POST'])
 def password_regex():
     # 检查password格式
     r = request.get_json(force=True)
@@ -168,7 +174,7 @@ def password_regex():
     return res(data=regex_password(password))
 
 
-@instance.route('/auth/email_regex', methods=['POST'])
+@instance.route('/email_regex', methods=['POST'])
 def email_regex():
     # 检查email格式
     r = request.get_json(force=True)
@@ -176,7 +182,7 @@ def email_regex():
     return res(data=regex_email(email))
 
 
-@instance.route('/auth/check_username', methods=['POST'])
+@instance.route('/check_username', methods=['POST'])
 def check_username():
     # 检查username是否存在
     r = request.get_json(force=True)
@@ -188,7 +194,7 @@ def check_username():
     return res(data=False)
 
 
-@instance.route('/auth/check_email', methods=['POST'])
+@instance.route('/check_email', methods=['POST'])
 def check_email():
     # 检查email是否存在
     r = request.get_json(force=True)
