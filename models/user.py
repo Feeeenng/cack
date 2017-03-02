@@ -9,7 +9,7 @@ from . import BaseDocument, register_pre_save, conf
 from constants import GENDERS, SECRET
 from permissions import ROLES, MEMBER
 from utils.datetime_utils import now_lambda
-from utils.regex_utils import regex_username, regex_password, regex_email
+from utils.regex_utils import regex_password, regex_email, regex_nickname
 from utils.md5_utils import MD5
 from utils.mail_utils import Email
 from utils.token_utils import generate_confirmation_token, confirm_token
@@ -17,13 +17,11 @@ from utils.token_utils import generate_confirmation_token, confirm_token
 
 @register_pre_save()
 class User(UserMixin, BaseDocument):
-    username = StringField(required=True)  # 用户名
+    email = EmailField(default=None, unique=True)  # 联系邮箱
     password = StringField(required=True)  # 密码
     nickname = StringField(required=True)  # 昵称
-    email = EmailField(default=None, unique=True)  # 联系邮箱
     gender = IntField(choices=GENDERS, default=SECRET)  # 性别
     avatar = StringField()  # 头像
-    is_confirmed = BooleanField(default=False)  # 是否邮箱验证过
     privileges = ListField(IntField(), default=None)  # 权限
     sign_in_ip = StringField(default=None)  # 登录IP
     sign_in_at = DateTimeField(default=None)  # 登录时间
@@ -50,70 +48,48 @@ class User(UserMixin, BaseDocument):
         return self.password == md5.add_salt(current_app.config.get('SALT'))
 
     @classmethod
-    def signup(cls, username, password, confirm, email):
-        msgs = []
-        if not username:
-            msgs.append('用户名不能为空')
-        else:
-            if not regex_username(username):
-                msgs.append('用户名必须是6-20位字母和数字的组合, 第一位必须为字母')
-            else:
-                user = cls.objects(username=username.lower()).first()
-                if user:
-                    msgs.append('用户名已经存在')
-
-        if not password:
-            msgs.append('密码不能为空')
-            if not confirm:
-                msgs.append('重复密码不能为空')
-        else:
-            if not regex_password(password):
-                msgs.append('密码必须是6-20位字母和数字的组合, 第一位必须为大字母')
-            else:
-                if not confirm:
-                    msgs.append('重复密码不能为空')
-                else:
-                    if password != confirm:
-                        msgs.append('密码不一致')
-
+    def signup_check(cls, email, password, confirm, nickname):
         if not email:
-            msgs.append('邮箱不能为空')
+            return 'email', 'Email required'
         else:
             if not regex_email(email):
-                msgs.append('邮箱格式错误')
+                return 'email', 'Email format error'
             else:
                 user = cls.objects(email=email).first()
                 if user:
-                    msgs.append('邮箱已经存在')
+                    return 'email', 'Email is existed'
 
-        if msgs:
-            return msgs
+        if not password:
+            return 'password', 'Password required'
+        else:
+            if not regex_password(password):
+                return 'password', 'Password must be 6 to 20 of the combination of letters and Numbers, the first must be big letter'
+            else:
+                if not confirm:
+                    return 'confirm', 'Password required'
+                else:
+                    if password != confirm:
+                        return 'confirm', 'Passwords don\'t match'
 
+        if not nickname:
+            return 'nickname', 'Nickname required'
+        else:
+            if not regex_nickname(nickname):
+                return 'nickname', 'Nickname can\'t contain illegal characters(chinese, english letters and numbers only)'
+            else:
+                user = cls.objects(nickname=nickname).first()
+                if user:
+                    return 'nickname', 'Nickname is existed'
+        return None, None
+
+    @classmethod
+    def signup(cls, email, password, nickname):
         user = cls()
-        user.username = username.lower()
         md5 = MD5(password)
         user.password = md5.add_salt(current_app.config.get('SALT'))
         user.email = email
-        user.nickname = username
+        user.nickname = nickname
         user.save()
-
-        # generate confirm token
-        token = user.generate_confirmation_token()
-
-        # get confirm url
-        confirm_url = url_for('auth.confirm', token=token, _external=True)
-        html = render_template('email/email_activate.html', confirm_url=confirm_url)
-
-        EMAIL_SMTP_SERVER = current_app.config['EMAIL_SMTP_SERVER']
-        EMAIL_USERNAME = current_app.config['EMAIL_USERNAME']
-        EMAIL_PASSWORD = current_app.config['EMAIL_PASSWORD']
-        EMAIL_SENDER = current_app.config['EMAIL_SENDER']
-        email = Email(smtp_sever=EMAIL_SMTP_SERVER, username=EMAIL_USERNAME, password=EMAIL_PASSWORD, sender=EMAIL_SENDER,
-                      receivers=[user.email], subject='账户邮件确认', html=html)
-        email.build_email()
-        email.send_email()
-
-        return msgs
 
     def generate_confirmation_token(self, expiration=86400):
         return generate_confirmation_token(current_app.config['SECRET_KEY'], 'confirm', self.id, expiration)

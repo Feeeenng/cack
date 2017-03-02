@@ -19,7 +19,7 @@
 {% block content %}  <!-- 内容区 -->
     <div class="ui middle aligned center aligned grid">
         <div class="column">
-            <form class="ui large form" style="margin-top: 30%">
+            <form class="ui large form" style="margin-top: 30%" action="/signup" method="post" id="signup">
 
                 <h2 class="ui header">
                     <i class="edit icon"></i>
@@ -35,35 +35,35 @@
                     <div class="field">
                         <div class="ui transparent left icon input">
                             <i class="mail icon"></i>
-                            <input type="email" name="email" placeholder="Common E-mail">
+                            <input type="email" name="email" placeholder="Common E-mail" required onblur="blurRemoveErrorPrompt(this)">
                         </div>
                     </div>
                     <div class="field">
                         <div class="ui transparent left icon input">
                             <i class="lock icon"></i>
-                            <input type="password" name="password" placeholder="Password">
+                            <input type="password" name="password" placeholder="Password" onblur="blurRemoveErrorPrompt(this)">
                         </div>
                     </div>
                     <div class="field">
                         <div class="ui transparent left icon input">
                             <i class="lock icon"></i>
-                            <input type="password" name="confirm" placeholder="Confirm Password">
+                            <input type="password" name="confirm" placeholder="Confirm Password" onblur="blurRemoveErrorPrompt(this)">
                         </div>
                     </div>
                     <div class="field">
                         <div class="ui transparent left icon input">
                             <i class="user icon"></i>
-                            <input type="text" name="nickname" placeholder="nickname">
+                            <input type="text" name="nickname" placeholder="Nickname" onblur="blurRemoveErrorPrompt(this)">
                         </div>
                     </div>
                     <div class="field">
                         <div class="ui transparent left icon input">
                             <i class="keyboard icon"></i>
-                            <input type="text" name="captcha" placeholder="Captcha">
-                            <button class="ui mini button" onclick="sendCaptcha()">Send captcha</button>
+                            <input type="text" name="captcha" placeholder="Captcha" onblur="blurRemoveErrorPrompt(this)">
+                            <button class="ui mini button" type="button" onclick="sendCaptcha(this)">Send captcha</button>
                         </div>
                     </div>
-                    <div class="ui fluid transparent animated fade black submit button">
+                    <div class="ui fluid transparent animated fade black submit button" onclick="submitForm()">
                         <div class="visible content">Submit</div>
                         <div class="hidden content">
                             <i class="write icon"></i>
@@ -76,7 +76,7 @@
     </div>
 {% endblock %}
 
-    {% block scripts %}  <!-- js脚本区 -->
-        {{ super() }}
-        <script src="{{ url_for('static', filename='js/auth/signup.js') }}"></script>
-    {% endblock %}
+{% block scripts %}  <!-- js脚本区 -->
+    {{ super() }}
+    <script src="{{ url_for('static', filename='js/auth/signup.js') }}"></script>
+{% endblock %}

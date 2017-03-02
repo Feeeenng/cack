@@ -1,6 +1,7 @@
 # -*- coding: utf8 -*-
 from __future__ import unicode_literals
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+import random
 
 
 def generate_confirmation_token(secret_key, key, data, expiration=86400):
@@ -17,3 +18,7 @@ def confirm_token(secret_key, key, data, token):
     if d.get(key) != data:
         return False
     return True
+
+
+def generate_captcha():
+    return ''.join([str(random.choice(xrange(10))) for i in xrange(6)])

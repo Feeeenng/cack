@@ -1,7 +1,8 @@
 # -*- coding: utf8 -*-
 from __future__ import unicode_literals
 
-from flask import Blueprint, request, render_template, session, current_app, redirect, url_for, abort
+from datetime import timedelta
+from flask import Blueprint, request, render_template, session, current_app, redirect, url_for, abort, jsonify
 from flask import flash
 from flask_login import login_required, current_user
 from flask_principal import identity_changed, AnonymousIdentity, Identity, RoleNeed, UserNeed, ActionNeed
@@ -9,9 +10,9 @@ from flask_principal import identity_changed, AnonymousIdentity, Identity, RoleN
 from models.user import User
 from views import res
 from errors import Errors
-from utils.regex_utils import regex_username, regex_password, regex_email
-from utils.token_utils import confirm_token
-
+from utils.regex_utils import regex_password, regex_email
+from utils.token_utils import confirm_token, generate_confirmation_token, generate_captcha
+from utils.mail_utils import Email
 
 instance = Blueprint('auth', __name__)
 
@@ -59,14 +60,15 @@ def signup():
     if request.method == 'GET':
         return render_template('/auth/signup.html')
 
-    token = session.pop('_csrf_token', None)
-    if not token or token != request.form.get('_csrf_token'):
-        abort(403)
+    # token = session.pop('_csrf_token', None)
+    # if not token or token != request.form.get('_csrf_token'):
+    #     abort(403)
 
-    email = request.form.get('email', '')
-    password = request.form.get('password', '')
-    confirm = request.form.get('confirm', '')
-    nickname = request.form.get('nickname', '')
+    email = request.form.get('email', '').strip()
+    password = request.form.get('password', '').strip()
+    confirm = request.form.get('confirm', '').strip()
+    nickname = request.form.get('nickname', '').strip()
+    captcha = request.form.get('captcha', '').strip()
 
     params = {
         'email': email,
@@ -75,12 +77,21 @@ def signup():
         'nickname': nickname
     }
 
-    msgs = User.signup(**params)
-    if msgs:
-        return res(code=Errors.AUTH_REGISTER_INFO_ERROR, extra_msg=[' | '.join(msgs)])
+    filed_name, msg = User.signup_check(**params)
+    if msg:
+        return jsonify(success=False, filed_name=filed_name, error=msg)
 
+    if not captcha:
+        return jsonify(success=False, filed_name='captcha', error='Captcha required')
+
+    if email != session.get('email') or captcha != session.get('captcha'):
+        return jsonify(success=False, filed_name='captcha', error='Wrong captcha')
+
+    User.signup(email, password, nickname)
+    del session['email']
+    del session['captcha']
     flash('恭喜您注册成功', 'info')
-    return redirect(url_for('auth.login'))
+    return jsonify(success=True, url=url_for('index.index'))
 
 
 @instance.route('/email_confirm/<token>', methods=['GET'])
@@ -150,22 +161,44 @@ def reset_password(token, email):
 
 @instance.route('/send_captcha', methods=['POST'])
 def send_captcha():
-    email = request.form.get('email')
+    # 注册给邮件发送验证码
+    result = request.get_json(force=True)
+    email = result.get('email').strip()
     if not email:
-        return res(code=Errors.PARAMS_REQUIRED)
-    # todo: 发邮件
-    return res()
+        return jsonify(success=False, error='Email required')
+
+    if not regex_email(email):
+        return jsonify(success=False, error='Email format error')
+
+    user = User.objects(email=email).first()
+    if user:
+        return jsonify(success=False, error='Email is existed')
+
+    # generate confirm token
+    captcha = generate_captcha()
+    __send_captcha_with_email(email, captcha)
+
+    session.permanent = True
+    current_app.permanent_session_lifetime = timedelta(minutes=10)
+    session['email'] = email
+    session['captcha'] = captcha
+    return jsonify(success=True)
+
+
+def __send_captcha_with_email(email, captcha):
+    # get confirm url
+    html = render_template('email/email_send_captcha.html', captcha=captcha)
+
+    email = Email(smtp_sever=current_app.config['EMAIL_SMTP_SERVER'],
+                  username=current_app.config['EMAIL_USERNAME'],
+                  password=current_app.config['EMAIL_PASSWORD'],
+                  sender=current_app.config['EMAIL_SENDER'],
+                  receivers=[email], subject='注册验证码', html=html)
+    email.build_email()
+    email.send_email()
 
 
 # ################# ajax请求 ################# #
-@instance.route('/username_regex', methods=['POST'])
-def username_regex():
-    # 检查username格式
-    r = request.get_json(force=True)
-    username = r.get('username')
-    return res(data=regex_username(username))
-
-
 @instance.route('/password_regex', methods=['POST'])
 def password_regex():
     # 检查password格式

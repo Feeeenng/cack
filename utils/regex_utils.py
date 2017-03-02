@@ -13,12 +13,11 @@ def regex_email(email):
         return True
 
 
-# 账号的正则
-def regex_username(username):
+# 昵称的正则
+def regex_nickname(nickname):
     code = False
-    if re.match('^[A-Za-z][A-Za-z0-9]{5,19}$', username):
-        if re.search('[0-9]+', username):
-            code = True
+    if re.match('^[\u4e00-\u9fa5a-zA-Z0-9]+$', nickname):
+        code = True
     return code
 
 
