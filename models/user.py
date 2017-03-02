@@ -34,9 +34,27 @@ class User(UserMixin, BaseDocument):
         'strict': False
     }
 
-    def login(self, remember_me):
+    @classmethod
+    def login_check(cls, email, password, login_captcha):
+        if not email:
+            return 'email', 'Email required'
+
+        if not regex_email(email):
+            return 'email', 'Email format error'
+
+        if not password:
+            return 'password', 'Password required'
+
+        if not login_captcha:
+            return 'captcha', 'Captcha required'
+
+        return None, None
+
+    def login(self, remember_me, sign_in_ip):
         login_user(self, remember=remember_me)
+        self.sign_in_ip = sign_in_ip
         self.sign_in_at = now_lambda()
+        self.save()
 
     def logout(self):
         self.sign_out_at = now_lambda()

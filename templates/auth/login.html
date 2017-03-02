@@ -1,6 +1,6 @@
 <div class="ui middle aligned center aligned grid">
     <div class="column">
-        <form class="ui large form" style="margin-top: 60%">
+        <form class="ui large form" style="margin-top: 60%" action="/login" method="post" id="login">
             <a class="ui right corner label" id="sign_up_icon" href="{{ url_for('auth.signup') }}">
                 <i class="edit icon" style="cursor: pointer"></i>
             </a>
@@ -8,16 +8,23 @@
                 <div class="field">
                     <div class="ui transparent left icon input">
                         <i class="mail icon"></i>
-                        <input type="email" name="email" placeholder="E-mail address">
+                        <input type="email" name="email" placeholder="E-mail address" onblur="blurRemoveErrorPrompt(this)">
                     </div>
                 </div>
                 <div class="field">
                     <div class="ui transparent left icon input">
                         <i class="lock icon"></i>
-                        <input type="password" name="password" placeholder="Password">
+                        <input type="password" name="password" placeholder="Password" onblur="blurRemoveErrorPrompt(this)">
                     </div>
                 </div>
-                <div class="ui fluid transparent animated fade black submit button">
+                <div class="field">
+                    <div class="ui transparent left icon input">
+                        <i class="calculator icon"></i>
+                        <input type="text" name="captcha" placeholder="Captcha" onblur="blurRemoveErrorPrompt(this)">
+                        <a onclick="getLoginCaptcha()"><img style="width: 80px;height: 24px" id="login_captcha"></a>
+                    </div>
+                </div>
+                <div class="ui fluid transparent animated fade black submit button" onclick="submitLoginForm()">
                     <div class="visible content">Login</div>
                     <div class="hidden content">
                         <i class="sign in icon"></i>

@@ -8,6 +8,7 @@ from flask_login import login_required, current_user
 from flask_principal import identity_changed, AnonymousIdentity, Identity, RoleNeed, UserNeed, ActionNeed
 
 from models.user import User
+from utils.captcha import generate_verify_code
 from views import res
 from errors import Errors
 from utils.regex_utils import regex_password, regex_email
@@ -20,28 +21,6 @@ instance = Blueprint('auth', __name__)
 @instance.before_request
 def before_request():
     pass
-
-
-@instance.route('/login', methods=['POST'])
-def login():
-    username = request.form.get('username')
-    password = request.form.get('password')
-    remember = request.form.get('remember')
-
-    if not username or not password:
-        return res(code=Errors.PARAMS_REQUIRED)
-
-    user = User.objects(username=username).first()
-    if not user or not user.verify_password(password):
-        return res(code=Errors.AUTH_LOGIN_INFO_ERROR)
-
-    user.sign_in_ip = request.remote_addr
-    user.login(remember)
-    user.save()
-
-    identity_changed.send(current_app._get_current_object(), identity=Identity(user.id))
-    flash('你好, {0}'.format(user.nickname), 'info')
-    return res(data={'url': request.args.get('next') or url_for('index.index')})
 
 
 @instance.route('/logout')
@@ -198,42 +177,35 @@ def __send_captcha_with_email(email, captcha):
     email.send_email()
 
 
-# ################# ajax请求 ################# #
-@instance.route('/password_regex', methods=['POST'])
-def password_regex():
-    # 检查password格式
-    r = request.get_json(force=True)
-    password = r.get('password')
-    return res(data=regex_password(password))
+@instance.route('/get_login_captcha', methods=['GET'])
+def get_login_captcha():
+    # 获取登录验证码
+    result, img_base64 = generate_verify_code()
+    session['login_captcha'] = result
+    return jsonify(success=True, data='data:image/jpg;base64,{0}'.format(img_base64), result=result)
 
 
-@instance.route('/email_regex', methods=['POST'])
-def email_regex():
-    # 检查email格式
-    r = request.get_json(force=True)
-    email = r.get('email')
-    return res(data=regex_email(email))
+@instance.route('/login', methods=['POST'])
+def login():
+    email = request.form.get('email')
+    password = request.form.get('password')
+    remember = request.form.get('remember')
+    login_captcha = request.form.get('captcha', type=int)
 
+    filed_name, msg = User.login_check(email, password, login_captcha)
+    if msg:
+        return jsonify(success=False, filed_name=filed_name, error=msg)
 
-@instance.route('/check_username', methods=['POST'])
-def check_username():
-    # 检查username是否存在
-    r = request.get_json(force=True)
-    username = r.get('username')
-    if username:
-        user = User.objects(username=username).first()
-        if user:
-            return res(data=True)
-    return res(data=False)
+    if login_captcha != session.get('login_captcha'):
+        return jsonify(success=False, filed_name='captcha', error='Wrong captcha')
 
+    user = User.objects(email=email).first()
+    if not user or not user.verify_password(password):
+        return 'email', 'Email and Password do not match', None
 
-@instance.route('/check_email', methods=['POST'])
-def check_email():
-    # 检查email是否存在
-    r = request.get_json(force=True)
-    email = r.get('email')
-    if email:
-        user = User.objects(email=email).first()
-        if user:
-            return res(data=True)
-    return res(data=False)
+    user.login(remember, request.remote_addr)
+    del session['login_captcha']
+
+    identity_changed.send(current_app._get_current_object(), identity=Identity(user.id))
+    flash('你好, {0}'.format(user.nickname), 'info')
+    return jsonify(success=True, url=request.args.get('next') or url_for('index.index'))
