@@ -16,3 +16,18 @@ function errorPrompt(filed_name, error_msg) {
 function blurRemoveErrorPrompt(obj) {
     $(obj).parent().popup('destroy');
 }
+
+function lockButton(obj, content){
+    //验证码
+    var s = 59;
+    var _this = $(obj);
+    _this.addClass('disabled').html('Send again ('+ s +'s)');
+    var timer = setInterval(function(){
+        s--;
+        _this.html('Send again ('+ s +'s)');
+        if(s == 0){
+            _this.removeClass('disabled').html(content);
+            clearInterval(timer);
+        }
+    },1000);
+}

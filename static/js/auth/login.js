@@ -21,7 +21,7 @@ $(document).ready(function () {
 });
 
 function submitLoginForm() {
-    // 提交表单
+    // 提交登录表单
     var data = $('#login').serialize();
     $.ajax({
         async : false,
@@ -43,3 +43,29 @@ function submitLoginForm() {
     });
 }
 
+function submitFindPasswordForm(obj) {
+    // 提交找回密码表单
+    var data = $('#find_pass_word_form').serialize();
+    $.ajax({
+        async : false,
+        url: '/forget_password',
+        type: "POST",
+        data: data,
+        dataType   : "json",
+        success: function(ret){
+            if(!ret["success"]) {
+                errorPrompt(ret["filed_name"], ret["error"]);
+            } else {
+                lockButton(obj, 'Send email');
+            }
+        },
+        error: function (ret) {
+            alert('网络异常');
+        }
+    });
+}
+
+function showFindPasswordBox() {
+    $('#find_pass_word_form input[name="find_password_email"]').val('');
+    $('#find_pass_word').transition('drop');
+}

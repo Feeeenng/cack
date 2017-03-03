@@ -66,6 +66,15 @@ class User(UserMixin, BaseDocument):
         return self.password == md5.add_salt(current_app.config.get('SALT'))
 
     @classmethod
+    def find_password_check(cls, email):
+        if not email:
+            return 'find_password_email', 'Email required'
+        else:
+            if not regex_email(email):
+                return 'find_password_email', 'Email format error'
+        return None, None
+
+    @classmethod
     def signup_check(cls, email, password, confirm, nickname):
         if not email:
             return 'email', 'Email required'

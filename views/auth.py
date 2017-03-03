@@ -86,30 +86,27 @@ def confirm(token):
     return redirect(url_for('index.index'))
 
 
-@instance.route('/forget_password', methods=['GET', 'POST'])
+@instance.route('/forget_password', methods=['POST'])
 def forget_password():
-    if request.method == 'GET':
-        return render_template('/auth/forget_password.html')
+    find_password_email = request.form.get('find_password_email')
 
-    username = request.form.get('username')
-    email = request.form.get('email')
+    filed_name, msg = User.find_password_check(find_password_email)
+    if msg:
+        return jsonify(success=False, filed_name=filed_name, error=msg)
 
-    if not username or not email:
-        return res(code=Errors.PARAMS_REQUIRED)
-
-    user = User.objects(username=username, email=email).first()
+    user = User.objects(email=find_password_email).first()
     if not user:
-        return res(code=Errors.AUTH_FORGET_PASSWORD_ERROR)
+        return jsonify(success=False, filed_name='find_password_email', error='Email is not existed')
 
     user.send_email_find_password()
     flash('重置密码邮件已发送, 请查收')
-    return res(data={'url': request.args.get('next') or url_for('index.index')})
+    return jsonify(success=True)
 
 
 @instance.route('/reset_password/<token>/<email>', methods=['GET', 'POST'])
 def reset_password(token, email):
     if request.method == 'GET':
-        return render_template('/reset_password.html')
+        return render_template('/auth/reset_password.html')
 
     password = request.form.get('password')
     confirm = request.form.get('confirm')
