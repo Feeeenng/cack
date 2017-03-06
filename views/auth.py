@@ -26,6 +26,7 @@ def before_request():
 @instance.route('/logout')
 @login_required
 def logout():
+    # 注销登录
     for key in ['identity.id', 'identity.auth_type']:
         session.pop(key, None)
 
@@ -36,6 +37,7 @@ def logout():
 
 @instance.route('/signup', methods=['GET', 'POST'])
 def signup():
+    # 注册
     if request.method == 'GET':
         return render_template('/auth/signup.html')
 
@@ -69,25 +71,26 @@ def signup():
     User.signup(email, password, nickname)
     del session['email']
     del session['captcha']
-    flash('恭喜您注册成功', 'info')
+    flash('Signup succeed, welcome to join us.', 'info')
     return jsonify(success=True, url=url_for('index.index'))
 
 
-@instance.route('/email_confirm/<token>', methods=['GET'])
-@login_required
-def confirm(token):
-    if current_user.is_confirmed:
-        return redirect(url_for('index.index'))
-
-    if current_user.confirm(token):
-        flash('您的账户邮箱验证成功', 'info')
-    else:
-        flash('邮箱验证链接无效或是已经过期', 'info')
-    return redirect(url_for('index.index'))
+# @instance.route('/email_confirm/<token>', methods=['GET'])
+# @login_required
+# def confirm(token):
+#     if current_user.is_confirmed:
+#         return redirect(url_for('index.index'))
+#
+#     if current_user.confirm(token):
+#         flash('您的账户邮箱验证成功', 'info')
+#     else:
+#         flash('邮箱验证链接无效或是已经过期', 'info')
+#     return redirect(url_for('index.index'))
 
 
 @instance.route('/forget_password', methods=['POST'])
 def forget_password():
+    # 忘记密码发邮件
     find_password_email = request.form.get('find_password_email')
 
     filed_name, msg = User.find_password_check(find_password_email)
@@ -99,40 +102,43 @@ def forget_password():
         return jsonify(success=False, filed_name='find_password_email', error='Email is not existed')
 
     user.send_email_find_password()
-    flash('重置密码邮件已发送, 请查收')
+    flash('Email has been sent, check your email')
     return jsonify(success=True)
 
 
 @instance.route('/reset_password/<token>/<email>', methods=['GET', 'POST'])
 def reset_password(token, email):
+    code, data = confirm_token(current_app.config['SECRET_KEY'], token)
+    if not code:
+        return jsonify(success=False, error='Invalid link or expired link (15min)')
+
     if request.method == 'GET':
         return render_template('/auth/reset_password.html')
 
     password = request.form.get('password')
     confirm = request.form.get('confirm')
     if not password:
-        return res(code=Errors.COMMON_ERROR, extra_msg=['密码不能为空'])
+        return jsonify(success=False, filed_name='password', error='Password required')
 
     if not regex_password(password):
-        return res(code=Errors.COMMON_ERROR, extra_msg=['密码必须是6-20位字母和数字的组合, 第一位必须为大字母'])
+        return jsonify(success=False, filed_name='password', error='Password must be 6 to 20 of the combination of letters and Numbers, the first must be big letter')
 
     if not confirm:
-        return res(code=Errors.COMMON_ERROR, extra_msg=['重复密码不能为空'])
+        return jsonify(success=False, filed_name='confirm', error='Password required')
 
     if password != confirm:
-        return res(code=Errors.COMMON_ERROR, extra_msg=['密码不一致'])
+        return jsonify(success=False, filed_name='confirm', error='Passwords don\'t match')
 
-    if confirm_token(current_app.config['SECRET_KEY'], 'reset', email, token):
+    if data.get('reset') == email:
         user = User.objects(email=email).first()
         if user:
             user.reset_password(password)
-            flash('密码重置成功', 'info')
+            flash('Reset succeed', 'info')
+            return jsonify(success=True, url=url_for('index.index'))
         else:
-            flash('邮箱验证链接无效或是已经过期', 'warning')
+            return jsonify(success=False, filed_name='confirm', error='Invalid link or expired link (15min)')
     else:
-        flash('邮箱验证链接无效或是已经过期', 'warning')
-
-    return res(data={'url': request.args.get('next') or url_for('auth.login')})
+        return jsonify(success=False, filed_name='confirm', error='Invalid link or expired link (15min)')
 
 
 @instance.route('/send_captcha', methods=['POST'])
@@ -184,6 +190,7 @@ def get_login_captcha():
 
 @instance.route('/login', methods=['POST'])
 def login():
+    # 登录
     email = request.form.get('email')
     password = request.form.get('password')
     remember = request.form.get('remember')
@@ -204,5 +211,5 @@ def login():
     del session['login_captcha']
 
     identity_changed.send(current_app._get_current_object(), identity=Identity(user.id))
-    flash('你好, {0}'.format(user.nickname), 'info')
+    flash('Hello, {0}'.format(user.nickname), 'info')
     return jsonify(success=True, url=request.args.get('next') or url_for('index.index'))

@@ -9,15 +9,15 @@ def generate_confirmation_token(secret_key, key, data, expiration=86400):
     return s.dumps({key: data})
 
 
-def confirm_token(secret_key, key, data, token):
+def confirm_token(secret_key, token):
     s = Serializer(secret_key)
     try:
         d = s.loads(token)
     except:
-        return False
-    if d.get(key) != data:
-        return False
-    return True
+        return False, None
+    # if d.get(key) != data:
+    #     return False
+    return True, d
 
 
 def generate_captcha():
