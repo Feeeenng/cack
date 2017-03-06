@@ -18,7 +18,28 @@
 
 {% block content %}  <!-- 内容区 -->
     {% if current_user.is_authenticated %}
-
+        <div class="ui raised black segment" style="margin-top: 1%">
+            <h1 class="ui header">
+                <img src="http://www.semantic-ui.cn/images/avatar2/large/patrick.png" class="ui circular image">
+                <div class="content">
+                    {{ current_user.nickname }}
+                    <div class="sub header">
+                        <div>
+                            <i class="mail icon" title="gender"></i> {{ current_user.email }}
+                            <i class="male icon" title="gender"></i> 男
+                            <i class="birthday icon" title="birthday"></i> 1992-03-14
+                            <i class="history icon" title="last login at"></i> 2017-03-06 20:10:00
+                        </div>
+                        <div>
+                            <i class="write icon" title="motto"></i> I've got an F and a C and I got a K too, And the only thing that's missing is a bitch like U
+                        </div>
+                    </div>
+                </div>
+                <div class="ui button mini right floated">
+                    edit
+                </div>
+            </h1>
+        </div>
     {% else %}
         {{ embed_html('auth/login.html') }}
     {% endif %}
