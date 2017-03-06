@@ -206,7 +206,7 @@ def login():
 
     user = User.objects(email=email).first()
     if not user or not user.verify_password(password):
-        return 'email', 'Email and Password do not match', None
+        return jsonify(success=False, filed_name='email', error='Email and Password do not match')
 
     user.login(remember, request.remote_addr)
     del session['login_captcha']

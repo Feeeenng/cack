@@ -16,6 +16,7 @@ function sendCaptcha(obj) {
             } else {
                 alert("邮件已发送"); //展示
                 lockButton(obj, 'Send captcha');
+                showSentEmailMessage();
             }
         },
         error: function (ret) {

@@ -36,3 +36,13 @@ $('.message .close').on('click', function() {
     // 关闭消息
     $(this).closest('.message').transition('fade');
 });
+
+function showSentEmailMessage() {
+    // 展示发送邮件后的消息
+    var x = function () {
+        $('#loading_message').transition('swing down', '2s');
+    };
+    $('#loading_message').transition('swing down', '2s', function(){
+        setTimeout(x, 5000)
+    })
+}
