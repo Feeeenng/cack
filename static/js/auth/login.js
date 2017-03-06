@@ -70,3 +70,18 @@ function showFindPasswordBox() {
     $('#find_pass_word_form input[name="find_password_email"]').val('');
     $('#find_pass_word').transition('drop');
 }
+
+
+$(function () {
+    $("#captcha_input").keyup(function () {
+        //如果输入非数字，则替换为''，如果输入数字，则在每4位之后添加一个空格分隔
+        var v = this.value;
+        var r_v = this.value.replace(/[^\d]/g, '');
+        if(v!=r_v){
+            errorPrompt('captcha', 'Captcha is a number');
+        } else {
+            blurRemoveErrorPrompt(this);
+        }
+        this.value = r_v;
+    })
+});
