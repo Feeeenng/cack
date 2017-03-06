@@ -57,6 +57,7 @@ function submitFindPasswordForm(obj) {
                 errorPrompt(ret["filed_name"], ret["error"]);
             } else {
                 lockButton(obj, 'Send email');
+                showSentEmailMessage()
             }
         },
         error: function (ret) {
@@ -68,4 +69,14 @@ function submitFindPasswordForm(obj) {
 function showFindPasswordBox() {
     $('#find_pass_word_form input[name="find_password_email"]').val('');
     $('#find_pass_word').transition('drop');
+}
+
+function showSentEmailMessage() {
+    // 展示发送邮件后的消息
+    var x = function () {
+        $('#loading_message').transition('swing down', '2s');
+    };
+    $('#loading_message').transition('swing down', '2s', function(){
+        setTimeout(x, 5000)
+    })
 }

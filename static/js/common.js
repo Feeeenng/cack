@@ -31,3 +31,8 @@ function lockButton(obj, content){
         }
     },1000);
 }
+
+$('.message .close').on('click', function() {
+    // 关闭消息
+    $(this).closest('.message').transition('fade');
+});

@@ -71,7 +71,7 @@ def signup():
     User.signup(email, password, nickname)
     del session['email']
     del session['captcha']
-    flash('Signup succeed, welcome to join us.', 'info')
+    flash('Signup succeed, welcome to join us.', 'green')
     return jsonify(success=True, url=url_for('index.index'))
 
 
@@ -102,7 +102,6 @@ def forget_password():
         return jsonify(success=False, filed_name='find_password_email', error='Email is not existed')
 
     user.send_email_find_password()
-    flash('Email has been sent, check your email')
     return jsonify(success=True)
 
 
@@ -133,7 +132,9 @@ def reset_password(token, email):
         user = User.objects(email=email).first()
         if user:
             user.reset_password(password)
-            flash('Reset succeed', 'info')
+            if user.is_authenticated:
+                user.logout()
+            flash('Reset succeed', 'green')
             return jsonify(success=True, url=url_for('index.index'))
         else:
             return jsonify(success=False, filed_name='confirm', error='Invalid link or expired link (15min)')
@@ -211,5 +212,5 @@ def login():
     del session['login_captcha']
 
     identity_changed.send(current_app._get_current_object(), identity=Identity(user.id))
-    flash('Hello, {0}'.format(user.nickname), 'info')
+    flash('Hello, {0}'.format(user.nickname), 'blue')
     return jsonify(success=True, url=request.args.get('next') or url_for('index.index'))

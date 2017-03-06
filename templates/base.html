@@ -22,6 +22,21 @@
     {% endblock %}
 
     <div class="ui main container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul class=flashes>
+                    {% for category, message in messages %}
+                        <div class="ui {{ category }} floating message">
+                            <i class="close icon"></i>
+                            <div class="header">
+                                {{ message }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+
         {% block content %}  <!-- 内容区 -->
         {% endblock %}
     </div>
