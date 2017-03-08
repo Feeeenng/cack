@@ -18,6 +18,83 @@
 </head>
 
 <body>
+    <div class="ui standard modal transition visible" style="margin-top: -234px; display: none !important;" id="edit_user_info_box">
+        <div class="ui inverted dimmer" id="upload_loading_dimmer">
+            <div class="ui text loader">Loading</div>
+        </div>
+        <div class="header">User information </div>
+        <div class="image content">
+            <div class="ui medium blurring dimmable image" id="avatar_display">
+                <div class="ui dimmer">
+                    <div class="content">
+                        <div class="center">
+                            <h2 class="ui inverted header">Avatar</h2>
+                            <div class="ui inverted button" onclick="uploadAvatar()">Upload</div>
+                        </div>
+                    </div>
+                </div>
+                <div id="avatar_hidden_input">
+                    <input type="file" name="file" hidden id="avatar" onchange="ajaxFileUploadAvatar()">
+                </div>
+                <img src="{{ current_user.avatar }}" id="avatar_preview">
+            </div>
+            <div class="description">
+                <form class="ui large form" method="post" id="user_info_form">
+                    <input type="hidden" name="avatar" value="{{ current_user.avatar }}" id="avatar_url">
+                    <input type="hidden" name="user_id" value="{{ current_user.id }}">
+                    <div class="field" title="nickname">
+                        <div class="ui massive transparent input">
+                            <input type="text" name="nickname" placeholder="nickname" value="{{ current_user.nickname }}">
+                        </div>
+                    </div>
+
+                    <div class="field" title="email">
+                        <div class="ui transparent left icon input">
+                            <input type="email" name="email" value="{{ current_user.email }}" readonly>
+                            <i class="mail icon"></i>
+                        </div>
+                    </div>
+
+                    <div class="field" title="birthday">
+                        <div class="ui transparent left icon input">
+                            <input type="date" name="birthday" placeholder="birthday" value="{{ current_user.birthday or None }}">
+                            <i class="birthday icon"></i>
+                        </div>
+                    </div>
+
+                    <div class="field" title="motto">
+                        <div class="ui transparent left icon input">
+                            <input type="text" name="motto" placeholder="motto" value="{{ current_user.motto or '' }}">
+                            <i class="write icon"></i>
+                        </div>
+                    </div>
+
+                    <div class="field" title="gender">
+                        <i class="user icon"></i>
+                        <div class="ui inline dropdown">
+                            <input type="hidden" name="gender">
+                            <div class="text">Gender</div>
+                            <i class="dropdown icon"></i>
+                            <div class="menu">
+                                <div class="item" data-value="secret">Secret</div>
+                                <div class="item" data-value="male">Male</div>
+                                <div class="item" data-value="female">Female</div>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+
+                <div class="ui red floating message" hidden id="edit_user_info_message"></div>
+
+            </div>
+        </div>
+        <div class="actions">
+            <div class="ui black deny button">cancel</div>
+            <div class="ui positive right labeled icon button">confirm<i class="checkmark icon"></i> </div>
+        </div>
+    </div>
+
     <div class="ui main container">
         {% block navigation %}  <!-- 导航区 -->
             {% if current_user.is_authenticated %}
@@ -26,6 +103,10 @@
                     <a class="item">Messages </a>
                     <a class="item">Friends </a>
                     <div class="right menu">
+                        <a id="edit_user_info" class="ui image basic label" style="height: 75%;top: 15%;">
+                            <img src="{{ current_user.avatar }}">
+                            {{ current_user.nickname }}
+                        </a>
                         <a class="ui item" href="/logout">Logout </a>
                     </div>
                 </div>
@@ -61,7 +142,105 @@
     {% block scripts %}  <!-- js脚本区 -->
         <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
         <script src="//cdn.bootcss.com/semantic-ui/2.2.4/semantic.min.js"></script>
+        <script src="{{ url_for('static', filename='js/third_party/ajaxfileupload.js') }}"></script>
         <script src="{{ url_for('static', filename='js/common.js') }}"></script>
+        <script>
+            function detailUserInfo() {
+                var url = '/edit_user_info';
+                var data = $('#user_info_form').serialize();
+                var code = true;
+                $.ajax({
+                    async : false,
+                    url: url,
+                    type: "POST",
+                    data: data,
+                    dataType   : "json",
+                    success: function(ret){
+                        if(!ret["success"]) {
+                            messageTips('edit_user_info_message', ret['error'], 'fly left', '1s');
+                            code = false;
+                        }
+                        var r_data = ret['data'];
+                        $('#edit_user_info').empty().append(
+                            '<img src="'+r_data["avatar"]+'">' + r_data["nickname"]
+                        );
+                    },
+                    error: function (ret) {
+                        messageTips('edit_user_info_message', '网络异常', 'fly left', '1s');
+                        code = false;
+                    }
+                });
+                return code;
+            }
+
+            function reloadData() {
+                var user_id = $('#user_info_form input[name="user_id"]').val();
+                var url = '/edit_user_info?user_id=' + user_id;
+                $.ajax({
+                    async : false,
+                    url: url,
+                    type: "GET",
+                    dataType   : "json",
+                    success: function(ret){
+                        if(ret["success"]) {
+                            var r_data = ret["data"];
+                            $('#user_info_form input[name="nickname"]').val(r_data["nickname"]);
+                            $('#user_info_form input[name="birthday"]').val(r_data["birthday"]);
+                            $('#user_info_form input[name="motto"]').val(r_data["motto"]);
+                            $('.dropdown').dropdown('set selected', r_data["gender"]);
+                            $('#avatar_url').val(r_data["avatar"]);
+                            $('#avatar_preview').attr('src', r_data["avatar"]);
+                        } else {
+                            alert(ret['error']);
+                        }
+                    },
+                    error: function (ret) {
+                        alert('网络异常');
+                    }
+                });
+            }
+            $('#edit_user_info_box').modal({
+                transition: 'vertical flip',
+                onShow: reloadData,
+                onApprove: detailUserInfo
+            }).modal('attach events', '#edit_user_info', 'show');
+
+            $('.dropdown').dropdown({transition: 'swing down', duration:'300'});
+
+            $('#avatar_display').dimmer({on: 'hover'});
+
+            var ajaxFileUploadAvatar = function() {
+                $('#upload_loading_dimmer').addClass('active');
+                $.ajaxFileUpload({
+                    url: "{{ url_for('file.upload') }}",
+                    secureuri: false,
+                    fileElementId: 'avatar',
+                    dataType: 'json',
+                    data: {name: 'file'},
+                    success: function (data, status) {
+                        if(data['success']){
+                            var url = data['url'];
+                            $('#avatar_preview').attr('src', url);
+                            $('#avatar_url').val(url);
+                        }else{
+                            alert(data['error']);
+                        }
+                        setTimeout(function () {
+                            $('#upload_loading_dimmer').removeClass('active');
+                        }, 1000)
+                    },
+                    error: function (data, status, e) {
+                        $('#upload_loading_dimmer').removeClass('active');
+                        alert(e);
+                    }
+                });
+                $('avatar_hidden_input').empty().append('<input type="file" name="file" hidden id="avatar" onchange="ajaxFileUploadAvatar()">');
+            };
+
+            function uploadAvatar() {
+                $('#avatar').click();
+            }
+        </script>
     {% endblock %}
 </body>
 </html>

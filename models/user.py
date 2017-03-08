@@ -3,16 +3,17 @@ from __future__ import unicode_literals
 
 from flask import url_for, current_app, render_template
 from flask_login import UserMixin, login_user, logout_user
-from mongoengine import StringField, ListField, IntField, DateTimeField, EmailField, BooleanField
+from mongoengine import StringField, ListField, IntField, DateTimeField, EmailField, EmbeddedDocument, EmbeddedDocumentField
 
 from . import BaseDocument, register_pre_save, conf
-from constants import GENDERS, SECRET
+from constants import GENDERS, SECRET, GENDERS_DICT
 from permissions import ROLES, MEMBER
 from utils.datetime_utils import now_lambda
 from utils.regex_utils import regex_password, regex_email, regex_nickname
 from utils.md5_utils import MD5
 from utils.mail_utils import Email
 from utils.token_utils import generate_confirmation_token, confirm_token
+from utils.datetime_utils import format_datetime
 
 
 @register_pre_save()
@@ -20,19 +21,25 @@ class User(UserMixin, BaseDocument):
     email = EmailField(default=None, unique=True)  # 联系邮箱
     password = StringField(required=True)  # 密码
     nickname = StringField(required=True)  # 昵称
-    gender = IntField(choices=GENDERS, default=SECRET)  # 性别
+    gender = StringField(choices=GENDERS, default=SECRET)  # 性别
     avatar = StringField()  # 头像
     privileges = ListField(IntField(), default=None)  # 权限
     sign_in_ip = StringField(default=None)  # 登录IP
     sign_in_at = DateTimeField(default=None)  # 登录时间
     sign_out_at = DateTimeField(default=None)  # 注销时间
     roles = ListField(StringField(choices=ROLES, default=MEMBER), default=[])  # 角色
+    motto = StringField()  # 座右铭
+    birthday = DateTimeField()  # 生日
 
     meta = {
         'collection': 'user',
         'db_alias': conf.DATABASE_NAME,
         'strict': False
     }
+
+    @property
+    def gender_text(self):
+        return GENDERS_DICT.get(self.gender)
 
     @classmethod
     def login_check(cls, email, password, login_captcha):
@@ -145,3 +152,37 @@ class User(UserMixin, BaseDocument):
                       receivers=[self.email], subject='密码找回', html=html)
         email.build_email()
         email.send_email()
+
+    @property
+    def sign_in_at_str(self):
+        return format_datetime(self.sign_in_at)
+
+    @property
+    def birthday_str(self):
+        return format_datetime(self.birthday, '%Y-%m-%d')
+
+    def as_dict(self):
+        dic = dict(self.to_mongo())
+        if self.password:
+            del dic['password']
+
+        if self.sign_in_ip:
+            del dic['sign_in_ip']
+
+        if self.sign_in_at:
+            dic['sign_in_at'] = self.sign_in_at_str
+
+        if self.created_at:
+            del dic['created_at']
+
+        if self.updated_at:
+            del dic['updated_at']
+
+        if self.deleted_at:
+            del dic['deleted_at']
+
+        if self.birthday:
+            dic['birthday'] = self.birthday_str
+
+        dic['gender_text'] = self.gender_text
+        return dic

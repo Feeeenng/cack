@@ -46,3 +46,13 @@ function showSentEmailMessage() {
         setTimeout(x, 5000)
     })
 }
+
+function messageTips(id, msg, action, seconds) {
+    $('#'+id).html(msg);
+    var x = function () {
+        $('#'+id).transition(action, seconds);
+    };
+    $('#'+id).transition(action, seconds, function(){
+        setTimeout(x, 5000)
+    })
+}

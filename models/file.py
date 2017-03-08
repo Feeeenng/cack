@@ -29,6 +29,10 @@ class FileManage(BaseDocument):
                'watermark/2/text/Y2Fjaw==/font/Y29taWMgc2FucyBtcw==/fontsize/800/fill/IzAwMDAwMA==/dissolve/80/gravity/SouthEast/dx/10/dy/10'
 
     @property
+    def avatar(self):
+        return conf.QINIU_BUCKET_DOMAIN + '/' + self.key + '?' + 'imageMogr2/auto-orient/thumbnail/300x256!/format/png/blur/1x0/quality/75|imageslim'
+
+    @property
     def file_size(self):
         if self.size / 1024.0 ** 2 >= 1:
             return '%2.2f MB' % (self.size / 1024.0 ** 2)

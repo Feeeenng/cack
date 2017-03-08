@@ -4,7 +4,7 @@ import os
 from cStringIO import StringIO
 from bson import ObjectId
 
-from flask import Blueprint, send_file, request, flash, url_for
+from flask import Blueprint, send_file, request, flash, url_for, jsonify
 from flask_login import login_required
 
 from . import res
@@ -27,10 +27,10 @@ def before_request():
 def upload():
     f = request.files.get('file')
     if not is_allowed_format(f.filename):
-        return res(code=Errors.UPLOAD_FORMAT_LIMITATION)
+        return jsonify(success=False, error='Format error, only(jpg, png, jpeg, gif)')
 
     if not is_allowed_size(f):
-        return res(code=Errors.UPLOAD_SIZE_LIMITATION)
+        return jsonify(success=False, error='Size error, max: 10M ')
 
     data = f.stream.read()
     io = StringIO()
@@ -41,7 +41,7 @@ def upload():
     if not fm:
         code, msg, d = uploader.upload(io)
         if not code:
-            return res(code=Errors.QINIU_ERROR, extra_msg=[msg])
+            return jsonify(success=False, error=msg)
 
         key = d.get('key', '')
         hash = d.get('hash', '')
@@ -56,7 +56,7 @@ def upload():
         fm.size = size
         fm.content_type = content_type
         fm.save()
-    return res(data={'url': fm.file_url})
+    return jsonify(success=True, url=fm.avatar)
 
 
 @instance.route('/file/delete/<regex("[0-9a-z]{24}"):key>', methods=['GET'])
