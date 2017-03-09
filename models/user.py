@@ -52,7 +52,7 @@ class User(UserMixin, BaseDocument):
         if not password:
             return 'password', 'Password required'
 
-        if not login_captcha:
+        if login_captcha == None or login_captcha == '':
             return 'captcha', 'Captcha required'
 
         return None, None

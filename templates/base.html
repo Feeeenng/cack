@@ -103,11 +103,19 @@
                     <a class="item">Messages </a>
                     <a class="item">Friends </a>
                     <div class="right menu">
+                        <div class="item" style="height:100%">
+                            <div class="ui transparent icon input">
+                                <input type="text" placeholder="Search...">
+                                <i class="search icon"></i>
+                            </div>
+                        </div>
+
                         <a id="edit_user_info" class="ui image basic label" style="height: 75%;top: 15%;">
                             <img src="{{ current_user.avatar }}">
                             {{ current_user.nickname }}
                         </a>
-                        <a class="ui item" href="/logout">Logout </a>
+
+                        <a class="ui item logout" href="/logout">Logout</a>
                     </div>
                 </div>
             {% endif %}
