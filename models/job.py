@@ -1,7 +1,7 @@
 # -*- coding: utf8 -*-
 from __future__ import unicode_literals
 
-from mongoengine import StringField, FloatField
+from mongoengine import StringField, FloatField, IntField
 
 from . import BaseDocument, register_pre_save
 from configs import conf
@@ -35,6 +35,7 @@ class Job(BaseDocument):
     duration = FloatField()  # 执行时间（单位：s）
     results = StringField()  # 执行结果
     exceptions = StringField()  # 异常
+    process_id = IntField()  # 进程ID
 
     meta = {
         'collection': 'job',

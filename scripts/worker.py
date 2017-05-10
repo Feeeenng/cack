@@ -65,11 +65,10 @@ def cycle():
                     for job in jobs:
                         if q.semaphore.get_value() > 0:
                             job.status = JOB_PROCESSING
-                            job.save()
-
-                            job_id = job.id
                             q.semaphore.acquire()
-                            p = Process(target=worker, args=(job_id, q.semaphore))
+                            p = Process(target=worker, args=(job.id, q.semaphore))
+                            job.process_id = p._parent_pid
+                            job.save()
                             p.start()
 
                             q.is_popped = True

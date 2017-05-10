@@ -31,3 +31,14 @@ admin_permission = Permission(RoleNeed(ADMIN))
 #     def __init__(self, post_id):
 #         need = EditBlogPostNeed(unicode(post_id))
 #         super(EditBlogPostPermission, self).__init__(need)
+
+
+# **usage:
+#    edit_blog_post_permission = EditBlogPostPermission(post_id)
+
+#    1.接口中拥有编辑该篇文章的权限（接口内权限访问）
+#    with edit_blog_post_permission.require():
+#       pass
+
+#    2.该用户是否拥有访问该接口的权限（权限限制接口访问）
+#    @edit_blog_post_permission.require()
