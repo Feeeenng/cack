@@ -13,8 +13,16 @@
     {% block styles %}  <!-- 样式区 -->
         <link rel="shortcut icon" href="{{ url_for('static', filename='icon/cack.ico') }}">
         <link rel="stylesheet" charset="utf-8" type="text/css" href="//cdn.bootcss.com/semantic-ui/2.2.4/semantic.min.css">
-    {% endblock %}
+        <style>
+            .ui.toggle.checkbox input:focus:checked~.box:before, .ui.toggle.checkbox input:focus:checked~label:before {
+                background-color: rgba(0, 0, 0, 0.71) !important;
+            }
 
+            .ui.toggle.checkbox input:checked~.box:before, .ui.toggle.checkbox input:checked~label:before {
+                background-color: #000000!important;
+            }
+        </style>
+    {% endblock %}
 </head>
 
 <body>
@@ -99,9 +107,9 @@
         {% block navigation %}  <!-- 导航区 -->
             {% if current_user.is_authenticated %}
                 <div class="ui secondary pointing menu">
-                    <a class="item active">Home </a>
-                    <a class="item">Messages </a>
-                    <a class="item">Friends </a>
+                    <a class="home-item item {{ 'active' if category == 'home' else '' }}" href="/">主页 </a>
+                    <a class="home-item item {{ 'active' if category == 'vote' else '' }}" href="/vote">投票 </a>
+                    <a class="home-item item {{ 'active' if category == 'friend' else '' }}">朋友 </a>
                     <div class="right menu">
                         <div class="item" style="height:100%">
                             <div class="ui transparent icon input">
@@ -248,6 +256,12 @@
             function uploadAvatar() {
                 $('#avatar').click();
             }
+
+            var home_items = $('.home-item');
+            home_items.click(function () {
+                home_items.removeClass('active');
+                $(this).addClass('active');
+            });
         </script>
     {% endblock %}
 </body>
