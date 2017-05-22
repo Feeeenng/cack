@@ -74,6 +74,7 @@ class Vote(BaseDocument):
 
     def as_dict(self, uid):
         dic = {
+            'id': self.id,
             'title': self.title,
             'cover': self.cover,
             'description': self.description,
@@ -109,3 +110,65 @@ class Vote(BaseDocument):
         if self.expired_at < now or self.voters_count >= self.limitation:
             return True
         return False
+
+
+@register_pre_save()
+class VoteCategory(BaseDocument):
+    RED = 'red'
+    ORANGE = 'orange'
+    YELLOW = 'yellow'
+    OLIVE = 'olive'
+    GREEN = 'green'
+    TEAL = 'teal'
+    BLUE = 'blue'
+    VIOLET = 'violet'
+    PURPLE = 'purple'
+    PINK = 'pink'
+    BROWN = 'brown'
+    GREY = 'grey'
+    BLACK = 'black'
+    COLORS = [
+        (RED, RED),
+        (ORANGE, ORANGE),
+        (YELLOW, YELLOW),
+        (OLIVE, OLIVE),
+        (GREEN, GREEN),
+        (TEAL, TEAL),
+        (BLUE, BLUE),
+        (VIOLET, VIOLET),
+        (PURPLE, PURPLE),
+        (PINK, PINK),
+        (BROWN, BROWN),
+        (GREY, GREY),
+        (BLACK, BLACK)
+    ]
+    COLORS_DICT = dict(COLORS)
+
+    name = StringField()  # 分类为名
+    color = StringField(choices=COLORS, required=True)  # 分类颜色
+
+    meta = {
+        'collection': 'vote_category',
+        'db_alias': conf.DATABASE_NAME,
+        'strict': False
+    }
+
+    def as_dict(self):
+        dic = {
+            'id': self.id,
+            'name': self.name,
+            'color': self.color
+        }
+        return dic
+
+    @classmethod
+    def new_category(cls, name, color):
+        c = cls.objects(name=name, deleted_at=None).first()
+        if c:
+            return False
+
+        c = cls()
+        c.name = name
+        c.color = color
+        c.save()
+        return True
