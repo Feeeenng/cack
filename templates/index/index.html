@@ -78,10 +78,108 @@
             </div>
         </div>
 
-        <div class="ui vertical segment">
-            <div class="ui raised segment">
+        <h4 class="ui horizontal divider header"><i class="bar chart on icon"></i> 热门投票 </h4>
+
+        <!-- 热门投票列表 -->
+        <div class="ui raised segment">
+            <a class="ui blue right ribbon label">
+                <i class="ellipsis horizontal icon"></i> 更多
+            </a>
+
+            <div class="ui styled fluid accordion" style="margin-top: 1%">
+
+                <div class="vote">
+                    <div class="title">
+                        <a class="ui blue tag label">
+                            <span title="分类">
+                                <i class="spoon icon"></i>
+                                Food
+                            </span>
+                            <span title="标题">
+                                <i class="dropdown icon"></i>
+                                What is a dog?What is a dog?What is a dog?What is a dog?
+                            </span>
+                        </a>
+
+                        <div style="float: right">
+                            <div class="ui horizontal label" title="投票发起人">
+                                <i class="user icon"></i>
+                                Cack
+                            </div>
+
+                            <div class="ui horizontal label" title="投票人数">
+                                <i class="pie chart icon"></i>
+                                100/100
+                            </div>
+
+                            <div class="ui horizontal label" title="投票时间">
+                                <i class="clock icon"></i>
+                                2017-03-14
+                                --
+                                2017-03-18
+                            </div>
+
+                            <div class="ui green horizontal label">
+                                <i class="pin icon"></i>
+                                已投票
+                            </div>
+                            <div class="ui yellow horizontal label">
+                                <i class="coffee icon"></i>
+                                投票关闭
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="content">
+                        <div class="ui black segment">
+                            is_closed
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
+
+        <h4 class="ui horizontal divider header"><i class="users icon"></i> TOP 10 </h4>
+
+        <div class="ui raised segment" style="margin-bottom: 10%">
+            <a class="ui teal right ribbon label">
+                <i class="ellipsis horizontal icon"></i> 更多
+            </a>
+
+            <div class="ui five special cards" style="margin-top: 1%">
+
+                <div class="black card">
+                    <div class="blurring dimmable image">
+                        <div class="ui dimmer">
+                            <div class="content">
+                                <div class="center">
+                                    <div class="ui inverted button">Add Friend</div>
+                                </div>
+                            </div>
+                        </div>
+                        <img src="http://www.semantic-ui.cn/images/avatar/large/steve.jpg">
+                    </div>
+
+                    <div class="content">
+                        <a class="header">Team Fu &amp; Hess</a>
+                        <div class="meta">
+                            <a class="ui blue horizontal label">Fruit</a>
+                            <a class="ui red horizontal label">Food</a>
+                            <a class="ui yellow horizontal label">Sport</a>
+                            <a class="ui teal horizontal label">Music</a>
+                        </div>
+                    </div>
+                    <div class="extra content">
+                        <a title="新建"><i class="add square icon"></i> 5 </a>
+                        <a title="参与"><i class="check square icon"></i> 3 </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
     {% else %}
         {{ embed_html('auth/login.html') }}
     {% endif %}

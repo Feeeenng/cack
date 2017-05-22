@@ -186,3 +186,16 @@ class User(UserMixin, BaseDocument):
 
         dic['gender_text'] = self.gender_text
         return dic
+
+    @classmethod
+    def get_user_by_uid(cls, uid):
+        return cls.objects(id=uid, deleted_at=None).first()
+
+    @classmethod
+    def get_user_name(cls, uid):
+        nickname = ''
+        u = cls.get_user_by_uid(uid)
+        if u:
+            nickname = u.nickname
+        return nickname
+
