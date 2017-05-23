@@ -28,648 +28,250 @@
 {% endblock %}
 
 {% block content %}  <!-- 内容区 -->
-    {% if current_user.is_authenticated %}
-        <div class="ui vertical segment">
-            <div class="ui raised segment">
-                <!-- 搜索框 -->
-                <div class="ui left icon input">
-                    <input type="text" placeholder="搜索...">
-                    <i class="bar chart icon"></i>
-                </div>
 
-                <!-- 过滤类型 -->
-                <div class="ui inline dropdown select-btn">
-                    <input type="hidden" name="category">
-                    <div class="text">
-                        <i class="filter icon"></i>
-                        分类
-                    </div>
-                    <i class="dropdown icon"></i>
-                    <div class="menu">
-                        <div class="ui icon search input">
-                            <i class="search icon"></i>
-                            <input type="text" placeholder="Search tags...">
-                        </div>
-                        <div class="scrolling menu scroll-1">
-                            <div class="item" data-value="important">
-                                <div class="ui red empty circular label"></div>
-                                Important
-                            </div>
-                            <div class="item" data-value="important">
-                                <div class="ui red empty circular label"></div>
-                                Important
-                            </div>
-                            <div class="item" data-value="important">
-                                <div class="ui red empty circular label"></div>
-                                Important
-                            </div>
-                            <div class="item" data-value="important">
-                                <div class="ui red empty circular label"></div>
-                                Important
-                            </div>
-                            <div class="item" data-value="important">
-                                <div class="ui red empty circular label"></div>
-                                Important
-                            </div>
-                            <div class="item" data-value="important">
-                                <div class="ui red empty circular label"></div>
-                                Important
-                            </div>
-                            <div class="item" data-value="important">
-                                <div class="ui red empty circular label"></div>
-                                Important
-                            </div>
-                            <div class="item" data-value="important">
-                                <div class="ui red empty circular label"></div>
-                                Important
-                            </div>
-                            <div class="item" data-value="important">
-                                <div class="ui red empty circular label"></div>
-                                Important
-                            </div>
+    <!-- 弹出层 -->
+    <div class="ui small modal" id="add-vote-modal">
+        <i class="close icon"></i>
+        <div class="header">
+            发起投票
+        </div>
+        <div class="image content">
+
+            <div class="ui medium blurring dimmable image" id="avatar_display">
+                <div class="ui dimmer">
+                    <div class="content">
+                        <div class="center">
+                            <h2 class="ui inverted header">Avatar</h2>
+                            <div class="ui inverted button">Upload</div>
                         </div>
                     </div>
                 </div>
+                <div id="cover_hidden_input">
+                    <input type="file" name="file" hidden>
+                </div>
+                <img src="">
+            </div>
 
-                <!-- 过滤发起人 -->
-                <div class="ui inline dropdown select-btn">
-                    <div class="text">
-                        <i class="user icon"></i>
-                        发起人
+            <div class="description">
+
+            </div>
+        </div>
+        <div class="actions">
+            <div class="ui black deny button">取消</div>
+            <div class="ui positive right labeled icon button">
+                发起
+                <i class="checkmark icon"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- 投票列表 -->
+    <div class="ui vertical segment">
+        <div class="ui raised segment">
+            <!-- 搜索框 -->
+            <div class="ui left icon input">
+                <input type="text" placeholder="搜索...">
+                <i class="bar chart icon"></i>
+            </div>
+
+            <!-- 过滤类型 -->
+            <div class="ui inline dropdown select-btn">
+                <input type="hidden" name="category">
+                <div class="text">
+                    <i class="filter icon"></i>
+                    分类
+                </div>
+                <i class="dropdown icon"></i>
+                <div class="menu">
+                    <div class="ui icon search input">
+                        <i class="search icon"></i>
+                        <input type="text" placeholder="Search tags...">
                     </div>
-                    <i class="dropdown icon"></i>
-                    <div class="menu">
-                        <div class="ui icon search input">
-                            <i class="search icon"></i>
-                            <input type="text" placeholder="Search tags...">
+                    <div class="scrolling menu scroll-1">
+                        <div class="item" data-value="important">
+                            <div class="ui red empty circular label"></div>
+                            Important
                         </div>
-
-                        <div class="scrolling menu scroll-1">
-                            <div class="item">
-                                <img class="ui avatar image" src="http://www.semantic-ui.cn/images/avatar/small/jenny.jpg">
-                                Jenny Hess
-                            </div>
-                            <div class="item">
-                                <img class="ui avatar image" src="http://www.semantic-ui.cn/images/avatar/small/jenny.jpg">
-                                Jenny Hess
-                            </div>
-                            <div class="item">
-                                <img class="ui avatar image" src="http://www.semantic-ui.cn/images/avatar/small/jenny.jpg">
-                                Jenny Hess
-                            </div>
-                            <div class="item">
-                                <img class="ui avatar image" src="http://www.semantic-ui.cn/images/avatar/small/jenny.jpg">
-                                Jenny Hess
-                            </div>
-                            <div class="item">
-                                <img class="ui avatar image" src="http://www.semantic-ui.cn/images/avatar/small/jenny.jpg">
-                                Jenny Hess
-                            </div>
-                            <div class="item">
-                                <img class="ui avatar image" src="http://www.semantic-ui.cn/images/avatar/small/jenny.jpg">
-                                Jenny Hess
-                            </div>
-                            <div class="item">
-                                <img class="ui avatar image" src="http://www.semantic-ui.cn/images/avatar/small/jenny.jpg">
-                                Jenny Hess
-                            </div>
-                            <div class="item">
-                                <img class="ui avatar image" src="http://www.semantic-ui.cn/images/avatar/small/jenny.jpg">
-                                Jenny Hess
-                            </div>
-                            <div class="item">
-                                <img class="ui avatar image" src="http://www.semantic-ui.cn/images/avatar/small/jenny.jpg">
-                                Jenny Hess
-                            </div>
-                            <div class="item">
-                                <img class="ui avatar image" src="http://www.semantic-ui.cn/images/avatar/small/jenny.jpg">
-                                Jenny Hess
-                            </div>
+                        <div class="item" data-value="important">
+                            <div class="ui red empty circular label"></div>
+                            Important
+                        </div>
+                        <div class="item" data-value="important">
+                            <div class="ui red empty circular label"></div>
+                            Important
+                        </div>
+                        <div class="item" data-value="important">
+                            <div class="ui red empty circular label"></div>
+                            Important
+                        </div>
+                        <div class="item" data-value="important">
+                            <div class="ui red empty circular label"></div>
+                            Important
+                        </div>
+                        <div class="item" data-value="important">
+                            <div class="ui red empty circular label"></div>
+                            Important
+                        </div>
+                        <div class="item" data-value="important">
+                            <div class="ui red empty circular label"></div>
+                            Important
+                        </div>
+                        <div class="item" data-value="important">
+                            <div class="ui red empty circular label"></div>
+                            Important
+                        </div>
+                        <div class="item" data-value="important">
+                            <div class="ui red empty circular label"></div>
+                            Important
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- 过滤已经关闭 -->
-                <div class="ui toggle checkbox select-btn">
-                    <input type="checkbox" name="public">
-                    <label class="text">
-                        <strong>过滤关闭的投票</strong>
-                    </label>
+            <!-- 过滤发起人 -->
+            <div class="ui inline dropdown select-btn">
+                <div class="text">
+                    <i class="user icon"></i>
+                    发起人
                 </div>
+                <i class="dropdown icon"></i>
+                <div class="menu">
+                    <div class="ui icon search input">
+                        <i class="search icon"></i>
+                        <input type="text" placeholder="Search tags...">
+                    </div>
 
-                <!-- 搜索按钮 -->
-                <div class="ui right floated black animated fade button">
+                    <div class="scrolling menu scroll-1">
+                        <div class="item">
+                            <img class="ui avatar image" src="http://www.semantic-ui.cn/images/avatar/small/jenny.jpg">
+                            Jenny Hess
+                        </div>
+                        <div class="item">
+                            <img class="ui avatar image" src="http://www.semantic-ui.cn/images/avatar/small/jenny.jpg">
+                            Jenny Hess
+                        </div>
+                        <div class="item">
+                            <img class="ui avatar image" src="http://www.semantic-ui.cn/images/avatar/small/jenny.jpg">
+                            Jenny Hess
+                        </div>
+                        <div class="item">
+                            <img class="ui avatar image" src="http://www.semantic-ui.cn/images/avatar/small/jenny.jpg">
+                            Jenny Hess
+                        </div>
+                        <div class="item">
+                            <img class="ui avatar image" src="http://www.semantic-ui.cn/images/avatar/small/jenny.jpg">
+                            Jenny Hess
+                        </div>
+                        <div class="item">
+                            <img class="ui avatar image" src="http://www.semantic-ui.cn/images/avatar/small/jenny.jpg">
+                            Jenny Hess
+                        </div>
+                        <div class="item">
+                            <img class="ui avatar image" src="http://www.semantic-ui.cn/images/avatar/small/jenny.jpg">
+                            Jenny Hess
+                        </div>
+                        <div class="item">
+                            <img class="ui avatar image" src="http://www.semantic-ui.cn/images/avatar/small/jenny.jpg">
+                            Jenny Hess
+                        </div>
+                        <div class="item">
+                            <img class="ui avatar image" src="http://www.semantic-ui.cn/images/avatar/small/jenny.jpg">
+                            Jenny Hess
+                        </div>
+                        <div class="item">
+                            <img class="ui avatar image" src="http://www.semantic-ui.cn/images/avatar/small/jenny.jpg">
+                            Jenny Hess
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 过滤已经关闭 -->
+            <div class="ui toggle checkbox select-btn">
+                <input type="checkbox" name="public">
+                <label class="text">
+                    <strong>过滤关闭的投票</strong>
+                </label>
+            </div>
+
+            <!-- 搜索按钮 -->
+            <div class="ui right floated buttons">
+                <div class="ui black animated fade button">
                     <div class="visible content">搜索</div>
                     <div class="hidden content"><i class="search icon"></i></div>
                 </div>
-
-            </div>
-
-            <div class="ui raised segment" style="text-align: center;">
-                <div class="ui styled fluid accordion" style="margin-top: 1%;">
-
-                    <div class="vote">
-                        <div class="title">
-                            <a class="ui blue tag label">
-                                <span title="分类">
-                                    <i class="spoon icon"></i>
-                                    Food
-                                </span>
-                                <span title="标题">
-                                    <i class="dropdown icon"></i>
-                                    What is a dog?What is a dog?What is a dog?What is a dog?
-                                </span>
-                            </a>
-
-                            <div style="float: right">
-                                <div class="ui horizontal label" title="投票发起人">
-                                    <i class="user icon"></i>
-                                    Cack
-                                </div>
-
-                                <div class="ui horizontal label" title="投票人数">
-                                    <i class="pie chart icon"></i>
-                                    100/100
-                                </div>
-
-                                <div class="ui horizontal label" title="投票时间">
-                                    <i class="clock icon"></i>
-                                    2017-03-14
-                                    --
-                                    2017-03-18
-                                </div>
-
-                                <div class="ui green horizontal label">
-                                    <i class="pin icon"></i>
-                                    已投票
-                                </div>
-                                <div class="ui yellow horizontal label">
-                                    <i class="coffee icon"></i>
-                                    投票关闭
-                                </div>
-
-                            </div>
-
-                        </div>
-                        <div class="content">
-                            <div class="ui black segment">
-                                is_closed
-                            </div>
-                        </div>
-                    </div>
-                    <div class="vote">
-                        <div class="title">
-                            <a class="ui blue tag label">
-                                <span title="分类">
-                                    <i class="spoon icon"></i>
-                                    Food
-                                </span>
-                                <span title="标题">
-                                    <i class="dropdown icon"></i>
-                                    What is a dog?What is a dog?What is a dog?What is a dog?
-                                </span>
-                            </a>
-
-                            <div style="float: right">
-                                <div class="ui horizontal label" title="投票发起人">
-                                    <i class="user icon"></i>
-                                    Cack
-                                </div>
-
-                                <div class="ui horizontal label" title="投票人数">
-                                    <i class="pie chart icon"></i>
-                                    100/100
-                                </div>
-
-                                <div class="ui horizontal label" title="投票时间">
-                                    <i class="clock icon"></i>
-                                    2017-03-14
-                                    --
-                                    2017-03-18
-                                </div>
-
-                                <div class="ui green horizontal label">
-                                    <i class="pin icon"></i>
-                                    已投票
-                                </div>
-                                <div class="ui yellow horizontal label">
-                                    <i class="coffee icon"></i>
-                                    投票关闭
-                                </div>
-
-                            </div>
-
-                        </div>
-                        <div class="content">
-                            <div class="ui black segment">
-                                is_closed
-                            </div>
-                        </div>
-                    </div>
-                    <div class="vote">
-                        <div class="title">
-                            <a class="ui blue tag label">
-                                <span title="分类">
-                                    <i class="spoon icon"></i>
-                                    Food
-                                </span>
-                                <span title="标题">
-                                    <i class="dropdown icon"></i>
-                                    What is a dog?What is a dog?What is a dog?What is a dog?
-                                </span>
-                            </a>
-
-                            <div style="float: right">
-                                <div class="ui horizontal label" title="投票发起人">
-                                    <i class="user icon"></i>
-                                    Cack
-                                </div>
-
-                                <div class="ui horizontal label" title="投票人数">
-                                    <i class="pie chart icon"></i>
-                                    100/100
-                                </div>
-
-                                <div class="ui horizontal label" title="投票时间">
-                                    <i class="clock icon"></i>
-                                    2017-03-14
-                                    --
-                                    2017-03-18
-                                </div>
-
-                                <div class="ui green horizontal label">
-                                    <i class="pin icon"></i>
-                                    已投票
-                                </div>
-                                <div class="ui yellow horizontal label">
-                                    <i class="coffee icon"></i>
-                                    投票关闭
-                                </div>
-
-                            </div>
-
-                        </div>
-                        <div class="content">
-                            <div class="ui black segment">
-                                is_closed
-                            </div>
-                        </div>
-                    </div>
-                    <div class="vote">
-                        <div class="title">
-                            <a class="ui blue tag label">
-                                <span title="分类">
-                                    <i class="spoon icon"></i>
-                                    Food
-                                </span>
-                                <span title="标题">
-                                    <i class="dropdown icon"></i>
-                                    What is a dog?What is a dog?What is a dog?What is a dog?
-                                </span>
-                            </a>
-
-                            <div style="float: right">
-                                <div class="ui horizontal label" title="投票发起人">
-                                    <i class="user icon"></i>
-                                    Cack
-                                </div>
-
-                                <div class="ui horizontal label" title="投票人数">
-                                    <i class="pie chart icon"></i>
-                                    100/100
-                                </div>
-
-                                <div class="ui horizontal label" title="投票时间">
-                                    <i class="clock icon"></i>
-                                    2017-03-14
-                                    --
-                                    2017-03-18
-                                </div>
-
-                                <div class="ui green horizontal label">
-                                    <i class="pin icon"></i>
-                                    已投票
-                                </div>
-                                <div class="ui yellow horizontal label">
-                                    <i class="coffee icon"></i>
-                                    投票关闭
-                                </div>
-
-                            </div>
-
-                        </div>
-                        <div class="content">
-                            <div class="ui black segment">
-                                is_closed
-                            </div>
-                        </div>
-                    </div>
-                    <div class="vote">
-                        <div class="title">
-                            <a class="ui blue tag label">
-                                <span title="分类">
-                                    <i class="spoon icon"></i>
-                                    Food
-                                </span>
-                                <span title="标题">
-                                    <i class="dropdown icon"></i>
-                                    What is a dog?What is a dog?What is a dog?What is a dog?
-                                </span>
-                            </a>
-
-                            <div style="float: right">
-                                <div class="ui horizontal label" title="投票发起人">
-                                    <i class="user icon"></i>
-                                    Cack
-                                </div>
-
-                                <div class="ui horizontal label" title="投票人数">
-                                    <i class="pie chart icon"></i>
-                                    100/100
-                                </div>
-
-                                <div class="ui horizontal label" title="投票时间">
-                                    <i class="clock icon"></i>
-                                    2017-03-14
-                                    --
-                                    2017-03-18
-                                </div>
-
-                                <div class="ui green horizontal label">
-                                    <i class="pin icon"></i>
-                                    已投票
-                                </div>
-                                <div class="ui yellow horizontal label">
-                                    <i class="coffee icon"></i>
-                                    投票关闭
-                                </div>
-
-                            </div>
-
-                        </div>
-                        <div class="content">
-                            <div class="ui black segment">
-                                is_closed
-                            </div>
-                        </div>
-                    </div>
-                    <div class="vote">
-                        <div class="title">
-                            <a class="ui blue tag label">
-                                <span title="分类">
-                                    <i class="spoon icon"></i>
-                                    Food
-                                </span>
-                                <span title="标题">
-                                    <i class="dropdown icon"></i>
-                                    What is a dog?What is a dog?What is a dog?What is a dog?
-                                </span>
-                            </a>
-
-                            <div style="float: right">
-                                <div class="ui horizontal label" title="投票发起人">
-                                    <i class="user icon"></i>
-                                    Cack
-                                </div>
-
-                                <div class="ui horizontal label" title="投票人数">
-                                    <i class="pie chart icon"></i>
-                                    100/100
-                                </div>
-
-                                <div class="ui horizontal label" title="投票时间">
-                                    <i class="clock icon"></i>
-                                    2017-03-14
-                                    --
-                                    2017-03-18
-                                </div>
-
-                                <div class="ui green horizontal label">
-                                    <i class="pin icon"></i>
-                                    已投票
-                                </div>
-                                <div class="ui yellow horizontal label">
-                                    <i class="coffee icon"></i>
-                                    投票关闭
-                                </div>
-
-                            </div>
-
-                        </div>
-                        <div class="content">
-                            <div class="ui black segment">
-                                is_closed
-                            </div>
-                        </div>
-                    </div>
-                    <div class="vote">
-                        <div class="title">
-                            <a class="ui blue tag label">
-                                <span title="分类">
-                                    <i class="spoon icon"></i>
-                                    Food
-                                </span>
-                                <span title="标题">
-                                    <i class="dropdown icon"></i>
-                                    What is a dog?What is a dog?What is a dog?What is a dog?
-                                </span>
-                            </a>
-
-                            <div style="float: right">
-                                <div class="ui horizontal label" title="投票发起人">
-                                    <i class="user icon"></i>
-                                    Cack
-                                </div>
-
-                                <div class="ui horizontal label" title="投票人数">
-                                    <i class="pie chart icon"></i>
-                                    100/100
-                                </div>
-
-                                <div class="ui horizontal label" title="投票时间">
-                                    <i class="clock icon"></i>
-                                    2017-03-14
-                                    --
-                                    2017-03-18
-                                </div>
-
-                                <div class="ui green horizontal label">
-                                    <i class="pin icon"></i>
-                                    已投票
-                                </div>
-                                <div class="ui yellow horizontal label">
-                                    <i class="coffee icon"></i>
-                                    投票关闭
-                                </div>
-
-                            </div>
-
-                        </div>
-                        <div class="content">
-                            <div class="ui black segment">
-                                is_closed
-                            </div>
-                        </div>
-                    </div>
-                    <div class="vote">
-                        <div class="title">
-                            <a class="ui blue tag label">
-                                <span title="分类">
-                                    <i class="spoon icon"></i>
-                                    Food
-                                </span>
-                                <span title="标题">
-                                    <i class="dropdown icon"></i>
-                                    What is a dog?What is a dog?What is a dog?What is a dog?
-                                </span>
-                            </a>
-
-                            <div style="float: right">
-                                <div class="ui horizontal label" title="投票发起人">
-                                    <i class="user icon"></i>
-                                    Cack
-                                </div>
-
-                                <div class="ui horizontal label" title="投票人数">
-                                    <i class="pie chart icon"></i>
-                                    100/100
-                                </div>
-
-                                <div class="ui horizontal label" title="投票时间">
-                                    <i class="clock icon"></i>
-                                    2017-03-14
-                                    --
-                                    2017-03-18
-                                </div>
-
-                                <div class="ui green horizontal label">
-                                    <i class="pin icon"></i>
-                                    已投票
-                                </div>
-                                <div class="ui yellow horizontal label">
-                                    <i class="coffee icon"></i>
-                                    投票关闭
-                                </div>
-
-                            </div>
-
-                        </div>
-                        <div class="content">
-                            <div class="ui black segment">
-                                is_closed
-                            </div>
-                        </div>
-                    </div>
-                    <div class="vote">
-                        <div class="title">
-                            <a class="ui blue tag label">
-                                <span title="分类">
-                                    <i class="spoon icon"></i>
-                                    Food
-                                </span>
-                                <span title="标题">
-                                    <i class="dropdown icon"></i>
-                                    What is a dog?What is a dog?What is a dog?What is a dog?
-                                </span>
-                            </a>
-
-                            <div style="float: right">
-                                <div class="ui horizontal label" title="投票发起人">
-                                    <i class="user icon"></i>
-                                    Cack
-                                </div>
-
-                                <div class="ui horizontal label" title="投票人数">
-                                    <i class="pie chart icon"></i>
-                                    100/100
-                                </div>
-
-                                <div class="ui horizontal label" title="投票时间">
-                                    <i class="clock icon"></i>
-                                    2017-03-14
-                                    --
-                                    2017-03-18
-                                </div>
-
-                                <div class="ui green horizontal label">
-                                    <i class="pin icon"></i>
-                                    已投票
-                                </div>
-                                <div class="ui yellow horizontal label">
-                                    <i class="coffee icon"></i>
-                                    投票关闭
-                                </div>
-
-                            </div>
-
-                        </div>
-                        <div class="content">
-                            <div class="ui black segment">
-                                is_closed
-                            </div>
-                        </div>
-                    </div>
-                    <div class="vote">
-                        <div class="title">
-                            <a class="ui blue tag label">
-                                <span title="分类">
-                                    <i class="spoon icon"></i>
-                                    Food
-                                </span>
-                                <span title="标题">
-                                    <i class="dropdown icon"></i>
-                                    What is a dog?What is a dog?What is a dog?What is a dog?
-                                </span>
-                            </a>
-
-                            <div style="float: right">
-                                <div class="ui horizontal label" title="投票发起人">
-                                    <i class="user icon"></i>
-                                    Cack
-                                </div>
-
-                                <div class="ui horizontal label" title="投票人数">
-                                    <i class="pie chart icon"></i>
-                                    100/100
-                                </div>
-
-                                <div class="ui horizontal label" title="投票时间">
-                                    <i class="clock icon"></i>
-                                    2017-03-14
-                                    --
-                                    2017-03-18
-                                </div>
-
-                                <div class="ui green horizontal label">
-                                    <i class="pin icon"></i>
-                                    已投票
-                                </div>
-                                <div class="ui yellow horizontal label">
-                                    <i class="coffee icon"></i>
-                                    投票关闭
-                                </div>
-
-                            </div>
-
-                        </div>
-                        <div class="content">
-                            <div class="ui black segment">
-                                is_closed
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="black ui buttons" style="margin-top: 1%">
-                    <button class="ui active button">1</button>
-                    <button class="ui button">2</button>
-                    <button class="ui button">3</button>
+                <div class="or" data-text="or"></div>
+                <div class="ui green animated fade button" id="add-vote">
+                    <div class="visible content">发起</div>
+                    <div class="hidden content"><i class="add icon"></i></div>
                 </div>
             </div>
+
         </div>
 
-    {% endif %}
+        <div class="ui raised segment" style="text-align: center;">
+            <div class="ui styled fluid accordion" style="margin-top: 1%;">
+
+                <div class="vote">
+                    <div class="title">
+                        <a class="ui blue tag label">
+                            <span title="分类">
+                                <i class="spoon icon"></i>
+                                Food
+                            </span>
+                            <span title="标题">
+                                <i class="dropdown icon"></i>
+                                What is a dog?What is a dog?What is a dog?What is a dog?
+                            </span>
+                        </a>
+
+                        <div style="float: right">
+                            <div class="ui horizontal label" title="投票发起人">
+                                <i class="user icon"></i>
+                                Cack
+                            </div>
+
+                            <div class="ui horizontal label" title="投票人数">
+                                <i class="pie chart icon"></i>
+                                100/100
+                            </div>
+
+                            <div class="ui horizontal label" title="投票时间">
+                                <i class="clock icon"></i>
+                                2017-03-14
+                                --
+                                2017-03-18
+                            </div>
+
+                            <div class="ui green horizontal label">
+                                <i class="pin icon"></i>
+                                已投票
+                            </div>
+                            <div class="ui yellow horizontal label">
+                                <i class="coffee icon"></i>
+                                投票关闭
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="content">
+                        <div class="ui black segment">
+                            is_closed
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="ui black compact buttons" style="margin-top: 1%">
+                <button class="ui button">1</button>
+                <button class="ui button">2</button>
+                <button class="ui button">3</button>
+            </div>
+        </div>
+    </div>
+
 {% endblock %}
 
 {% block scripts %}

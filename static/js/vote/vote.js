@@ -5,3 +5,7 @@ $('.accordion').accordion({
 });
 
 $('.ui.checkbox').checkbox();
+
+$('#add-vote').click(function () {
+    $('#add-vote-modal').modal('show');
+});
