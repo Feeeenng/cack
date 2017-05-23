@@ -1,8 +1,8 @@
 # -*- coding: utf8 -*-
 from __future__ import unicode_literals
 
-from flask import Blueprint, render_template, jsonify, request
-from flask_login import login_required
+from flask import Blueprint, render_template, jsonify, request, redirect, url_for
+from flask_login import login_required, current_user
 
 from . import access_condition, memoize
 from views import res
@@ -18,6 +18,8 @@ def before_request():
 @instance.route('/', methods=['GET'])
 @access_condition(10, 3)
 def index():
+    if not current_user.is_authenticated:
+        return redirect(url_for('auth.login'))
     return render_template('/index/index.html', category='home')
 
 

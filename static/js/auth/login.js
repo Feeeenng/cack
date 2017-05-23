@@ -25,7 +25,7 @@ function submitLoginForm() {
     var data = $('#login').serialize();
     $.ajax({
         async : false,
-        url: '/login',
+        url: $('#login').attr('action'),
         type: "POST",
         data: data,
         dataType   : "json",

@@ -189,8 +189,11 @@ def get_login_captcha():
     return jsonify(success=True, data='data:image/jpg;base64,{0}'.format(img_base64), result=result)
 
 
-@instance.route('/login', methods=['POST'])
+@instance.route('/login', methods=['GET', 'POST'])
 def login():
+    if request.method == 'GET':
+        return render_template('/index/index.html', category='home')
+
     # 登录
     email = request.form.get('email')
     password = request.form.get('password')

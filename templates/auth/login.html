@@ -1,6 +1,6 @@
 <div class="ui middle aligned center aligned grid">
     <div class="column">
-        <form class="ui large form" style="margin-top: 60%" action="/login" method="post" id="login">
+        <form class="ui large form" style="margin-top: 60%" action="{{ request.url }}" method="post" id="login">
             <a class="ui right corner black label" id="sign_up_icon" href="{{ url_for('auth.signup') }}">
                 <i class="edit icon" style="cursor: pointer"></i>
             </a>
