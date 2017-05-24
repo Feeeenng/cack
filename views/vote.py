@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 from flask import Blueprint, render_template, jsonify, request
 from flask_login import login_required
-
+from models.vote import VoteCategory, Vote
 from views import res
 
 instance = Blueprint('vote', __name__)
@@ -17,4 +17,4 @@ def before_request():
 
 @instance.route('/vote', methods=['GET'])
 def index():
-    return render_template('/vote/index.html', category='vote')
+    return render_template('/vote/index.html', category='vote', types=Vote.TYPES)

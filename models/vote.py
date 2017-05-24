@@ -49,17 +49,17 @@ class EmbeddedOption(EmbeddedDocument):
 class Vote(BaseDocument):
     T_NORMAL = 'NORMAL'
     T_SPECIAL = 'SPECIAL'
-    TYPE = [
+    TYPES = [
         (T_NORMAL, '不限定投票人'),
         (T_SPECIAL, '指定投票人')
     ]
-    TYPE_DICT = dict(TYPE)
+    TYPES_DICT = dict(TYPES)
 
     title = StringField(required=True)  # 投票标题
     cover = StringField()  # 封面url
     description = StringField()  # 描述
     options = ListField(EmbeddedDocumentField(EmbeddedOption), default=[])  # 选项
-    v_type = StringField(choices=TYPE, default=T_NORMAL)  # 类型
+    v_type = StringField(choices=TYPES, default=T_NORMAL)  # 类型
     v_category = StringField()  # 分类
     specific_voters = ListField(StringField, default=[])  # 指定投票人， 类型为T_SPECIAL的时候用
     limitation = IntField(default=0)  # 限制投票人数
@@ -91,13 +91,17 @@ class Vote(BaseDocument):
             'created_at': format_datetime(self.created_at, '%Y-%m-%d'),
             'expired_at': format_datetime(self.expired_at, '%Y-%m-%d'),
             'is_voted': self.is_voted(uid),
-            'is_closed': self.is_closed
+            'is_closed': self.is_closed,
+            'could_edit': self.could_edit(uid)
         }
 
         return dic
 
     def is_voted(self, uid):
         return any(map(lambda a: a.is_voted(uid), self.options))
+
+    def could_edit(self, uid):
+        return self.creator_id == uid
 
     @property
     def voters_count(self):
@@ -128,19 +132,19 @@ class VoteCategory(BaseDocument):
     GREY = 'grey'
     BLACK = 'black'
     COLORS = [
-        (RED, RED),
-        (ORANGE, ORANGE),
-        (YELLOW, YELLOW),
-        (OLIVE, OLIVE),
-        (GREEN, GREEN),
-        (TEAL, TEAL),
-        (BLUE, BLUE),
-        (VIOLET, VIOLET),
-        (PURPLE, PURPLE),
-        (PINK, PINK),
-        (BROWN, BROWN),
-        (GREY, GREY),
-        (BLACK, BLACK)
+        (RED, '红色'),
+        (ORANGE, '橙色'),
+        (YELLOW, '黄色'),
+        (OLIVE, '橄榄色'),
+        (GREEN, '绿色'),
+        (TEAL, '青色'),
+        (BLUE, '蓝色'),
+        (VIOLET, '淡紫色'),
+        (PURPLE, '紫色'),
+        (PINK, '粉色'),
+        (BROWN, '棕色'),
+        (GREY, '灰色'),
+        (BLACK, '黑色')
     ]
     COLORS_DICT = dict(COLORS)
 

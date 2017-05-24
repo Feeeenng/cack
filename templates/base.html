@@ -218,7 +218,8 @@
             $('#edit_user_info_box').modal({
                 transition: 'vertical flip',
                 onShow: reloadData,
-                onApprove: detailUserInfo
+                onApprove: detailUserInfo,
+                allowMultiple: false
             }).modal('attach events', '#edit_user_info', 'show');
 
             $('.dropdown').dropdown({transition: 'swing down', duration:'300'});

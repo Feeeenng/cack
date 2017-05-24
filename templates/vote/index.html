@@ -30,30 +30,86 @@
 {% block content %}  <!-- 内容区 -->
 
     <!-- 弹出层 -->
-    <div class="ui small modal" id="add-vote-modal">
+    <div class="ui large modal" id="add-vote-modal">
         <i class="close icon"></i>
         <div class="header">
             发起投票
         </div>
         <div class="image content">
 
-            <div class="ui medium blurring dimmable image" id="avatar_display">
+            <div class="ui medium blurring dimmable image" id="add-vote-image">
                 <div class="ui dimmer">
                     <div class="content">
                         <div class="center">
-                            <h2 class="ui inverted header">Avatar</h2>
-                            <div class="ui inverted button">Upload</div>
+                            <h2 class="ui inverted header">投票图片</h2>
+                            <div class="ui inverted button">上传</div>
                         </div>
                     </div>
                 </div>
                 <div id="cover_hidden_input">
                     <input type="file" name="file" hidden>
                 </div>
-                <img src="">
+                <img src="http://ojysw795f.bkt.clouddn.com/5924fd9ff3051f59f00721c3?imageMogr2/auto-orient/thumbnail/300x256!/format/png/blur/1x0/quality/75|imageslim">
             </div>
 
-            <div class="description">
+            <div class="description" style="width: 800px">
+                <form class="ui large form" method="post" id="vote_info_form">
+                    <div class="field">
+                        <div class="ui transparent left icon input">
+                            <input type="text" placeholder="标题">
+                            <i class="edit icon"></i>
+                        </div>
+                    </div>
 
+                    <div class="field">
+                        <textarea name="description" placeholder="描述"></textarea>
+                    </div>
+
+                    <div class="field">
+                        <div class="three fields">
+                            <div class="field">
+                                <div class="ui inline dropdown select-btn">
+                                    <input type="hidden" name="v_category">
+                                    <div class="text">
+                                        <i class="filter icon"></i>
+                                        分类
+                                    </div>
+                                    <i class="dropdown icon"></i>
+                                    <div class="menu">
+                                        <div class="ui icon search input" style="width: 200px">
+                                            <i class="search icon"></i>
+                                            <input type="text" placeholder="Search tags...">
+                                        </div>
+
+                                        <div class="scrolling menu scroll-1">
+                                            <div class="item">
+                                                <i class="filter icon"></i>
+                                                分类
+                                            </div>
+                                            <div class="divider"></div>
+                                            <div class="item" data-value="important">
+                                                <div class="ui red empty circular label"></div>
+                                                color_name
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <div class="ui toggle checkbox" id="is-limitation">
+                                    <input type="checkbox" name="v_type">
+                                    <label><strong>指定投票人</strong></label>
+                                </div>
+                            </div>
+
+                            <div class="field">
+
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
             </div>
         </div>
         <div class="actions">
@@ -76,7 +132,7 @@
 
             <!-- 过滤类型 -->
             <div class="ui inline dropdown select-btn">
-                <input type="hidden" name="category">
+                <input type="hidden" name="v_category">
                 <div class="text">
                     <i class="filter icon"></i>
                     分类
@@ -87,42 +143,16 @@
                         <i class="search icon"></i>
                         <input type="text" placeholder="Search tags...">
                     </div>
+
                     <div class="scrolling menu scroll-1">
-                        <div class="item" data-value="important">
-                            <div class="ui red empty circular label"></div>
-                            Important
+                        <div class="item">
+                            <i class="filter icon"></i>
+                            分类
                         </div>
+                        <div class="divider"></div>
                         <div class="item" data-value="important">
                             <div class="ui red empty circular label"></div>
-                            Important
-                        </div>
-                        <div class="item" data-value="important">
-                            <div class="ui red empty circular label"></div>
-                            Important
-                        </div>
-                        <div class="item" data-value="important">
-                            <div class="ui red empty circular label"></div>
-                            Important
-                        </div>
-                        <div class="item" data-value="important">
-                            <div class="ui red empty circular label"></div>
-                            Important
-                        </div>
-                        <div class="item" data-value="important">
-                            <div class="ui red empty circular label"></div>
-                            Important
-                        </div>
-                        <div class="item" data-value="important">
-                            <div class="ui red empty circular label"></div>
-                            Important
-                        </div>
-                        <div class="item" data-value="important">
-                            <div class="ui red empty circular label"></div>
-                            Important
-                        </div>
-                        <div class="item" data-value="important">
-                            <div class="ui red empty circular label"></div>
-                            Important
+                            color_name
                         </div>
                     </div>
                 </div>
