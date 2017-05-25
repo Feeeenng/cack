@@ -98,14 +98,27 @@
 
                             <div class="field">
                                 <div class="ui toggle checkbox" id="is-limitation">
-                                    <input type="checkbox" name="v_type">
+                                    <input type="checkbox" name="v_limit">
                                     <label><strong>指定投票人</strong></label>
                                 </div>
                             </div>
 
                             <div class="field">
-
+                                <div class="ui transparent left icon input">
+                                    <input type="text" name="limitation" placeholder="人数">
+                                    <i class="users icon"></i>
+                                </div>
                             </div>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label><strong>有效期</strong></label>
+                        <div class="ui mini icon input">
+                            <input class="" type="text" name="expired_at" data-beatpicker="true"
+                               data-beatpicker-position="['*','*']"
+                               data-beatpicker-disable="{from: {{ today }},to:'<'}"
+                            />
                         </div>
                     </div>
 

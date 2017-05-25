@@ -1,7 +1,7 @@
 # -*- coding: utf8 -*-
 from __future__ import unicode_literals
 
-from mongoengine import StringField, ListField, IntField, EmbeddedDocumentField, EmbeddedDocument, DateTimeField
+from mongoengine import StringField, ListField, IntField, EmbeddedDocumentField, EmbeddedDocument, DateTimeField, BooleanField
 
 from . import BaseDocument, register_pre_save
 from configs import conf
@@ -49,17 +49,12 @@ class EmbeddedOption(EmbeddedDocument):
 class Vote(BaseDocument):
     T_NORMAL = 'NORMAL'
     T_SPECIAL = 'SPECIAL'
-    TYPES = [
-        (T_NORMAL, '不限定投票人'),
-        (T_SPECIAL, '指定投票人')
-    ]
-    TYPES_DICT = dict(TYPES)
 
     title = StringField(required=True)  # 投票标题
     cover = StringField()  # 封面url
     description = StringField()  # 描述
     options = ListField(EmbeddedDocumentField(EmbeddedOption), default=[])  # 选项
-    v_type = StringField(choices=TYPES, default=T_NORMAL)  # 类型
+    v_limit = BooleanField(default=False)  # 限制投票人
     v_category = StringField()  # 分类
     specific_voters = ListField(StringField, default=[])  # 指定投票人， 类型为T_SPECIAL的时候用
     limitation = IntField(default=0)  # 限制投票人数
@@ -79,8 +74,7 @@ class Vote(BaseDocument):
             'cover': self.cover,
             'description': self.description,
             'options': map(lambda a: a.as_dict(uid), self.options),
-            'v_type': self.v_type,
-            'v_type_text': self.TYPE_DICT.get(self.v_type),
+            'v_limit': self.v_limit,
             'v_category': self.v_category,
             'v_category_text': '',
             'specific_voters': [],
