@@ -24,6 +24,10 @@
         .scroll-1::-webkit-scrollbar-thumb{
             background:#e0e0e0;
         }
+
+        .beyond-count {
+            color: #ff5638;
+        }
     </style>
 {% endblock %}
 
@@ -62,7 +66,18 @@
                     </div>
 
                     <div class="field">
-                        <textarea name="description" placeholder="描述"></textarea>
+                        <textarea id="vote-description" class="scroll-1" name="description" placeholder="描述" style="height: 135px"></textarea>
+                        <a class="ui label"><i class="calculator icon"></i><span id="vote-description-count">0/256</span></a>
+                    </div>
+
+                    <div class="field">
+                        <div class="ui mini icon input">
+                            <input class="" type="text" name="expired_at" data-beatpicker="true"
+                               data-beatpicker-position="['*','*']"
+                               data-beatpicker-disable="{from: {{ today }},to:'<'}"
+                               placeholder="有效期"
+                            />
+                        </div>
                     </div>
 
                     <div class="field">
@@ -105,7 +120,7 @@
 
                             <div class="field">
                                 <div class="ui transparent left icon input">
-                                    <input type="text" name="limitation" placeholder="人数">
+                                    <input type="number" name="limitation" placeholder="人数" value="3" min="3" max="100">
                                     <i class="users icon"></i>
                                 </div>
                             </div>
@@ -113,15 +128,18 @@
                     </div>
 
                     <div class="field">
-                        <div class="ui mini icon input">
-                            <input class="" type="text" name="expired_at" data-beatpicker="true"
-                               data-beatpicker-position="['*','*']"
-                               data-beatpicker-disable="{from: {{ today }},to:'<'}"
-                               placeholder="有效期"
-                            />
+                        <input type="hidden" name="options[]">
+                        <div class="ui mini action left icon input">
+                            <i class="tags icon"></i>
+                            <input type="text" placeholder="添加投票项" id="option-input">
+                            <div class="ui animated teal fade button" tabindex="0" id="add-vote-option">
+                                <div class="visible content">添加</div>
+                                <div class="hidden content"><i class="add icon"></i></div>
+                            </div>
+                        </div>
+                        <div id="option-list" style="margin-top: 1%">
                         </div>
                     </div>
-
                 </form>
             </div>
         </div>
