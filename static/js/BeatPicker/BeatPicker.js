@@ -238,13 +238,14 @@ BeatPicker.prototype = {
                     this.className.clear,
                     this.className._inner.clearButton,
                     this.className._inner.defaultButton,
-                    'ui blue'
+                    'ui mini blue'
                 ),
                 type:"button"
             },
             null,
             this.labels.clearButton
         );
+        elem.css('margin-left', '10px');
         elem.on("click", function () {
             if (self._selectedDate || self._startRangeSelectedDate || self._endRangeSelectedDate) {
                 var options = {timeStamp: new Date().getTime()};
@@ -268,7 +269,7 @@ BeatPicker.prototype = {
         this._inputParentNode.append(elem);
     },
     _createIcon: function () {
-        this.dateInputNode.add(this._dateInputToNode).css("background", "url('" + this.view.iconImage + "') no-repeat right center");
+        this.dateInputNode.add(this._dateInputToNode).css("background", "url('" + this.view.iconImage + "') no-repeat 150px 10px");
         // this.dateInputNode.add(this._dateInputToNode).css("background-repeat", "no-repeat");
     },
     _createNavBar: function (header) {
